@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Reservation from "../../models/Reservation"
+import { ReservationRow } from "./ReservationRow"
 
-export const ReservationTable = ()=>{
-    const [reservations, setReservations] = useState<Reservation[]>([])
+export const ReservationTable: React.FC<{reservations: Reservation[]}> = (props)=>{
+    
 
     return(
         <div className="container mt-3">
@@ -16,12 +17,14 @@ export const ReservationTable = ()=>{
                             Exam Name
                         </th>
                         <th scope="col">
-                            Start Time
+                            Exam Length
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    {props.reservations.map(reservation =>(
+                        <ReservationRow reservation={reservation}/>
+                    ))}
                 </tbody>
             </table>
         </div>

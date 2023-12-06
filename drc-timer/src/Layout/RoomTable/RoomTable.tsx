@@ -2,20 +2,8 @@ import { useEffect, useState } from "react"
 import Room from "../../models/Room"
 import { RoomRow } from "./RoomRow"
 
-export const RoomTable = ()=>{
-    const roomNames: string[] = ["39", '38', '36', '34', '32']
-    const [rooms, setRooms] = useState<Room[]>([])
-
-    useEffect(()=>{
-        const setUpRooms = ()=>{
-            const newRooms: Room[] = []
-            for(let i = 0; i < roomNames.length; i ++){
-                newRooms.push(new Room(roomNames[i], null, true, true))
-            }
-            setRooms(newRooms)
-        }
-        setUpRooms()
-    }, [])
+export const RoomTable: React.FC<{rooms: Room[]}> = (props)=>{
+    
     return(
         <div className="container mt-3">
             <table className="table">
@@ -36,7 +24,7 @@ export const RoomTable = ()=>{
                     </tr>
                 </thead>
                 <tbody>
-                    {rooms.map(room =>(
+                    {props.rooms.map(room =>(
                         <RoomRow room={room}/>
                     ))}
                 </tbody>
