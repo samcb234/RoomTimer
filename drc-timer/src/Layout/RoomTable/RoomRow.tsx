@@ -17,6 +17,10 @@ export const RoomRow: React.FC<{room: Room}> = (props) =>{
                 <></>}
             </th>
             <th>
+                {props.room.reservation !== null ? 
+                <>{props.room.reservation.examName}</> : <></>}
+            </th>
+            <th>
                 time will go here
             </th>
             <th>

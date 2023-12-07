@@ -36,6 +36,19 @@ class Reservation {
         return this.formatTime(Math.abs(dif/1000))
     }
 
+    startTimer() {
+        this.startTime = new Date()
+    }
+
+    pauseTime() {
+        if(this.startTime !== null){
+            const d: Date = new Date()
+            const time: number = Math.abs((this.startTime.getTime() - d.getTime())/1000)
+            this.totalTimeOnExam = time
+            this.startTime = null
+        }
+    }
+
 }
 
 export default Reservation

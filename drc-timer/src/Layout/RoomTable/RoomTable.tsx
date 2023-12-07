@@ -16,6 +16,9 @@ export const RoomTable: React.FC<{rooms: Room[]}> = (props)=>{
                             Student Name
                         </th>
                         <th scope="col">
+                            Exam Name
+                        </th>
+                        <th scope="col">
                             Time
                         </th>
                         <th scope="col">
