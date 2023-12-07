@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import Reservation from "../../models/Reservation"
 import { ReservationRow } from "./ReservationRow"
 
-export const ReservationTable: React.FC<{reservations: Reservation[]}> = (props)=>{
+export const ReservationTable: React.FC<{reservations: Reservation[], assign:any}> = (props)=>{
     
 
     return(
@@ -19,11 +19,14 @@ export const ReservationTable: React.FC<{reservations: Reservation[]}> = (props)
                         <th scope="col">
                             Exam Length
                         </th>
+                        <th scope="col">
+                            Assign to Room
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {props.reservations.map(reservation =>(
-                        <ReservationRow reservation={reservation}/>
+                        <ReservationRow reservation={reservation} assign={props.assign}/>
                     ))}
                 </tbody>
             </table>

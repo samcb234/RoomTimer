@@ -3,30 +3,28 @@ import { ReservationTable } from "../ReservationTable/ReservationTable"
 import { RoomTable } from "../RoomTable/RoomTable"
 import Reservation from "../../models/Reservation"
 import Room from "../../models/Room"
+import { AddResForm } from "../AddResForm/AddResForm"
 
 export const Homepage = ()=>{
-    const resNames: string[] = ['sam block', 'santa jolicoeur']
-    const examNames: string[] = ['algo', 'ood']
-    const resLengths: number[] = [90, 150]
-    const privateRooms: boolean[] = [false, true]
-    const computerNeeded: boolean[] = [false, false]
-    const onlineExam: boolean[] = [false, false]
+    
     const [reservations, setReservations] = useState<Reservation[]>([])
-
+    
     const roomNames: string[] = ["39", '38', '36', '34', '32']
     const [rooms, setRooms] = useState<Room[]>([])
 
+    const [newRes, setNewRes] = useState<Reservation>()
+
     useEffect(()=>{
         const setUpReservations = () =>{
-            const newRes: Reservation[] = []
-            for(let i = 0; i < 2; i++){
-                newRes.push(new Reservation(resNames[i], examNames[i], null,
-                    resLengths[i] * 60, privateRooms[i], computerNeeded[i], onlineExam[i]))
-            }
-            setReservations(newRes)
+           if(newRes !== undefined){
+            const r: Reservation[] = reservations
+            r.push(newRes)
+            setReservations(r)
+            setNewRes(undefined)
+           }
         }
         setUpReservations()
-    }, [])
+    }, [newRes, reservations])
 
 
     useEffect(()=>{
@@ -40,13 +38,43 @@ export const Homepage = ()=>{
         setUpRooms()
     }, [])
 
+    function addReservation(res: Reservation){
+        setNewRes(res)
+    }
+
+    function validRoomCheck(res: Reservation, room: Room){
+        if(room.reservation === null){
+            if(res.privateRoom){
+                return room.privateRoom
+            }
+            if(res.computerNeeded){
+                return room.hasComputer
+            }
+            return true
+        }
+    }
+
+    function resFilter(name: string, examName: string, res: Reservation){
+        return (name !== res.name) || (examName !== res.examName)
+    }
+
+    function assignToRoom(res: Reservation){
+        const validRooms: Room[] = rooms.filter((room)=>validRoomCheck(res, room))
+        if(validRooms.length >= 1){
+            const room = validRooms[0]
+            room.reservation = res
+            setReservations(reservations.filter((reservation)=>resFilter(res.name, res.examName, reservation)))
+        }
+    }
+
     return(
         <div className='row'>
         <div className='col'>
           <RoomTable rooms={rooms}/>
         </div>
         <div className='col'>
-          <ReservationTable reservations={reservations}/>
+            <AddResForm addReservation={addReservation}/>
+          <ReservationTable reservations={reservations} assign={assignToRoom}/>
         </div>
       </div>
     )
