@@ -22,7 +22,7 @@ class Reservation {
         const hrs: number = Math.floor(timeLeft/3600)
         const min: number = Math.floor((timeLeft%3600)/60)
         const sec: number = timeLeft%60
-        return `${hrs}:${min}:${sec}`
+        return `${hrs}:${min}:${String(sec).split('.')[0]}`
     }
 
     //returns the total time on the exam if the exam isn't running, or the time left
@@ -32,19 +32,21 @@ class Reservation {
             return this.formatTime(this.totalTimeOnExam)
         }
         const d: Date = new Date()
-        const dif = this.startTime.getTime() -  d.getTime()
-        return this.formatTime(Math.abs(dif/1000))
+        const dif = this.startTime.getTime() -  d.getTime() //this value is a negative millisecond value, represents how much time has passed since the timer restarted
+        return this.formatTime(this.totalTimeOnExam - Math.abs(dif/1000))
     }
 
+    //adds the new start date so we get an accurate countdown
     startTimer() {
         this.startTime = new Date()
     }
 
+    //pauses the timer by setting the start time to null (as the start time will be readded when the timer starts again) and updates the total time left on the exam
     pauseTime() {
         if(this.startTime !== null){
             const d: Date = new Date()
             const time: number = Math.abs((this.startTime.getTime() - d.getTime())/1000)
-            this.totalTimeOnExam = time
+            this.totalTimeOnExam = this.totalTimeOnExam - time
             this.startTime = null
         }
     }
