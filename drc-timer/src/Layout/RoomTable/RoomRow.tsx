@@ -122,7 +122,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
                     <ul className="dropdown-menu">
                         <li><a className="dropdown-item" href="#" onClick={()=>moveResToQueue()}>Return Exam To Queue</a></li>
                         <li><a className="dropdown-item" href="#" onClick={()=>emptyRoom()}>Finish Exam</a></li>
-                        <li><a className="dropdown-item" href="#">Add Time To Exam (not implemented yet)</a></li>
+                        {/* <li><a className="dropdown-item" href="#">Add Time To Exam (not implemented yet)</a></li> */}
                         <li><a className="dropdown-item" href="#" onClick={()=>changeRoomAvailability()}>{available? 'Mark Room As Unavailable': 'Mark Room as Available'}</a></li>
                     </ul>
                 </div>
