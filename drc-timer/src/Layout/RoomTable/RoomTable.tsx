@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react"
 import Room from "../../models/Room"
 import { RoomRow } from "./RoomRow"
 
-export const RoomTable: React.FC<{rooms: Room[]}> = (props)=>{
+export const RoomTable: React.FC<{rooms: Room[], moveResToQueue: any}> = (props)=>{
     
     return(
         <div className="container mt-3">
@@ -24,11 +23,14 @@ export const RoomTable: React.FC<{rooms: Room[]}> = (props)=>{
                         <th scope="col">
                             Start/Stop
                         </th>
+                        <th scope="col">
+                            Menu
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {props.rooms.map(room =>(
-                        <RoomRow room={room}/>
+                        <RoomRow room={room} moveResToQueue={props.moveResToQueue}/>
                     ))}
                 </tbody>
             </table>

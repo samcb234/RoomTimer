@@ -31,7 +31,7 @@ export const Homepage = ()=>{
         const setUpRooms = ()=>{
             const newRooms: Room[] = []
             for(let i = 0; i < roomNames.length; i ++){
-                newRooms.push(new Room(roomNames[i], null, true, true))
+                newRooms.push(new Room(roomNames[i], null, true, true, true))
             }
             setRooms(newRooms)
         }
@@ -42,6 +42,7 @@ export const Homepage = ()=>{
         setNewRes(res)
     }
 
+
     function validRoomCheck(res: Reservation, room: Room){
         if(room.reservation === null){
             if(res.privateRoom){
@@ -50,7 +51,7 @@ export const Homepage = ()=>{
             if(res.computerNeeded){
                 return room.hasComputer
             }
-            return true
+            return room.available
         }
     }
 
@@ -70,7 +71,7 @@ export const Homepage = ()=>{
     return(
         <div className='row'>
         <div className='col'>
-          <RoomTable rooms={rooms}/>
+          <RoomTable rooms={rooms}moveResToQueue={addReservation}/>
         </div>
         <div className='col'>
             <AddResForm addReservation={addReservation}/>
