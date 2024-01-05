@@ -1,7 +1,7 @@
 import Room from "../../models/Room"
 import { RoomRow } from "./RoomRow"
 
-export const RoomTable: React.FC<{rooms: Room[], moveResToQueue: any}> = (props)=>{
+export const RoomTable: React.FC<{rooms: Room[], moveResToQueue: any, updateAvailableRooms: any}> = (props)=>{
     
     return(
         <div className="container mt-3">
@@ -30,7 +30,7 @@ export const RoomTable: React.FC<{rooms: Room[], moveResToQueue: any}> = (props)
                 </thead>
                 <tbody>
                     {props.rooms.map(room =>(
-                        <RoomRow room={room} moveResToQueue={props.moveResToQueue}/>
+                        <RoomRow room={room} moveResToQueue={props.moveResToQueue} updateAvailableRooms={props.updateAvailableRooms}/>
                     ))}
                 </tbody>
             </table>

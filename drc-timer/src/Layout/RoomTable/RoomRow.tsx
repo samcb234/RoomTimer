@@ -3,7 +3,7 @@ import Room from "../../models/Room";
 import Reservation from "../../models/Reservation";
 import { formatTime } from "../../utils/formatTime";
 
-export const RoomRow: React.FC<{ room: Room, moveResToQueue: any }> = (props) => {
+export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any }> = (props) => {
     const [runTimer, setRunTimer] = useState(false)
     const [displayString, setDisplayString] = useState('room is empty')
     const [rowColor, setRowColor] = useState('')
@@ -71,12 +71,14 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any }> = (props) =>
 
     function emptyRoom(){
         props.room.reservation = null
+        props.updateAvailableRooms()
         setRunTimer(false)
     }
 
     function changeRoomAvailability(){
         props.room.updateAvailability()
         setAvailable(!available)
+        props.updateAvailableRooms()
     }
 
     function moveResToQueue(){
@@ -85,6 +87,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any }> = (props) =>
             setRunTimer(false)
             props.moveResToQueue(props.room.reservation)
             props.room.reservation = null
+            props.updateAvailableRooms()
         }
     }
 

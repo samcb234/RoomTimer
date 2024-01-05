@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import Reservation from "../../models/Reservation"
 import { ReservationRow } from "./ReservationRow"
+import Room from "../../models/Room"
 
-export const ReservationTable: React.FC<{reservations: Reservation[], assign:any}> = (props)=>{
+export const ReservationTable: React.FC<{reservations: Reservation[], assign:any, assignToSpecificRoom: any, rooms: Room[]}> = (props)=>{
     
 
     return(
@@ -20,13 +21,17 @@ export const ReservationTable: React.FC<{reservations: Reservation[], assign:any
                             Exam Length
                         </th>
                         <th scope="col">
-                            Assign to Room
+                            Assign to Random Room
+                        </th>
+                        <th scope="col">
+                            Assing To Specific Room
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     {props.reservations.map(reservation =>(
-                        <ReservationRow reservation={reservation} assign={props.assign}/>
+                        <ReservationRow reservation={reservation} assignToRandomRoom={props.assign} assignToSpecificRoom={props.assignToSpecificRoom}
+                        rooms={props.rooms}/>
                     ))}
                 </tbody>
             </table>
