@@ -13,6 +13,12 @@ export const AddResForm: React.FC<{ addReservation: any }> = (props) => {
         const res: Reservation = new Reservation(name, examName, null, totalTimeOnExam * 60,
             privateRoom, computerNeeded, onlineExam)
         props.addReservation(res)
+        setName('')
+        setExamName('')
+        setTotalTimeOnExam(0)
+        setPrivateRoom(false)
+        setComputerNeeded(false)
+        setOnlineExam(false)
     }
     return (
         <div className="container mt-3">
@@ -29,7 +35,7 @@ export const AddResForm: React.FC<{ addReservation: any }> = (props) => {
             <div className="input-group mb-3">
                 <span className="input-group-text" id="basic-addon2">Exam Length</span>
                 <input type="number" className="form-control" placeholder="Exam Length (minutes)" aria-label="Username" aria-describedby="basic-addon2"
-                value={totalTimeOnExam} onChange={e => setTotalTimeOnExam(Number(e.target.value))}/>
+                value={totalTimeOnExam === 0 ? '': totalTimeOnExam} onChange={e => setTotalTimeOnExam(Number(e.target.value))}/>
             </div>
             <div className="input-group mb-3">
                 <input className="form-check-input" type="checkbox" value="" onClick={()=>setPrivateRoom(!privateRoom)}/>

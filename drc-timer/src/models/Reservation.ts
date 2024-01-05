@@ -1,11 +1,13 @@
+import { formatTime } from "../utils/formatTime"
+
 class Reservation {
-    name: string
-    examName: string
-    startTime: Date | null
-    totalTimeOnExam: number //seconds
-    privateRoom: boolean
-    computerNeeded: boolean
-    onlineExam: boolean
+     name: string
+     examName: string
+     startTime: Date | null
+     totalTimeOnExam: number //seconds
+     privateRoom: boolean
+     computerNeeded: boolean
+     onlineExam: boolean
 
     constructor(name: string, examName: string, startTime: Date | null, totalTimeOnExam: number, privateRoom: boolean, computerNeeded: boolean, onlineExam: boolean){
         this.name = name
@@ -17,23 +19,15 @@ class Reservation {
         this.onlineExam = onlineExam
     }
 
-    //formats a time in seconds as HH:MM:SS
-    formatTime(timeLeft: number): string {
-        const hrs: number = Math.floor(timeLeft/3600)
-        const min: number = Math.floor((timeLeft%3600)/60)
-        const sec: number = timeLeft%60
-        return `${hrs}:${min}:${String(sec).split('.')[0]}`
-    }
-
     //returns the total time on the exam if the exam isn't running, or the time left
     // if the exam is currently going
-    timeCheck(): string {
+    timeCheckSeconds() {
         if(this.startTime === null){
-            return this.formatTime(this.totalTimeOnExam)
+            return this.totalTimeOnExam
         }
         const d: Date = new Date()
         const dif = this.startTime.getTime() -  d.getTime() //this value is a negative millisecond value, represents how much time has passed since the timer restarted
-        return this.formatTime(this.totalTimeOnExam - Math.abs(dif/1000))
+        return this.totalTimeOnExam - Math.abs(dif/1000)
     }
 
     //adds the new start date so we get an accurate countdown
@@ -49,6 +43,10 @@ class Reservation {
             this.totalTimeOnExam = this.totalTimeOnExam - time
             this.startTime = null
         }
+    }
+
+    timeCheckString(){
+        return formatTime(this.timeCheckSeconds())
     }
 
 }

@@ -10,7 +10,7 @@ export const ReservationRow: React.FC<{reservation: Reservation, assign:any}> = 
                 {props.reservation.examName}
             </th>
             <th>
-                {props.reservation.timeCheck()}
+                {props.reservation.timeCheckString()}
             </th>
             <th>
                 <button className="btn btn-primary" onClick={()=>props.assign(props.reservation)}>Assign To Room</button>
