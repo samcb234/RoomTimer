@@ -41,3 +41,7 @@
   height: 700px;
   overflow:auto;
 }
+
+.grid-border{
+  border: 1px solid black;
+}

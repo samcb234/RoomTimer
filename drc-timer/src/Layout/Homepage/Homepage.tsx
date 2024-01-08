@@ -10,7 +10,6 @@ export const Homepage = ()=>{
     
     const [reservations, setReservations] = useState<Reservation[]>([])
     
-    const roomNames: string[] = ["39", '38', '36', '34', '32']
     const [rooms, setRooms] = useState<Room[]>([])
     const [availableRooms, setAvailableRooms] = useState<Room[]>([])
 
