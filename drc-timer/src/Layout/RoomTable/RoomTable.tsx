@@ -1,11 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Room from "../../models/Room"
 import { RoomRow } from "./RoomRow"
 
 export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAvailableRooms: any }> = (props) => {
 
     const [useTable, setUseTable] = useState(true)
-
     return (
         <div className="container mt-3">
             <button className="btn btn-primary mb-2" onClick={()=>setUseTable(!useTable)}>

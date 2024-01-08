@@ -4,7 +4,7 @@ import Reservation from "../../models/Reservation";
 import { formatTime } from "../../utils/formatTime";
 
 export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean }> = (props) => {
-    const [runTimer, setRunTimer] = useState(false)
+    const [runTimer, setRunTimer] = useState(props.room.runningTimer)
     const [displayString, setDisplayString] = useState('room is empty')
     const [rowColor, setRowColor] = useState('')
     const [available, setAvailable] = useState(props.room.available)
