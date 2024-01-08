@@ -5,6 +5,7 @@ export const RoomTable: React.FC<{rooms: Room[], moveResToQueue: any, updateAvai
     
     return(
         <div className="container mt-3">
+            <div className="overflow-table">
             <table className="table">
                 <thead>
                     <tr>
@@ -34,6 +35,7 @@ export const RoomTable: React.FC<{rooms: Room[], moveResToQueue: any, updateAvai
                     ))}
                 </tbody>
             </table>
+            </div>
         </div>
     )
 }

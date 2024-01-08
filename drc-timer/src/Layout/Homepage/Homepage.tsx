@@ -4,6 +4,7 @@ import { RoomTable } from "../RoomTable/RoomTable"
 import Reservation from "../../models/Reservation"
 import Room from "../../models/Room"
 import { AddResForm } from "../AddResForm/AddResForm"
+import { template, templateList } from "../../utils/Data/RoomData"
 
 export const Homepage = ()=>{
     
@@ -33,8 +34,9 @@ export const Homepage = ()=>{
     useEffect(()=>{
         const setUpRooms = ()=>{
             const newRooms: Room[] = []
-            for(let i = 0; i < roomNames.length; i ++){
-                newRooms.push(new Room(roomNames[i], null, true, true, true))
+            for(let i = 0; i < templateList.length; i ++){
+                const template: template = templateList[i]
+                newRooms.push(new Room(template.name, null, template.privateRoom, template.hasComputer, true))
             }
             setRooms(newRooms)
         }
