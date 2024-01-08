@@ -95,6 +95,12 @@ export const Homepage = ()=>{
         setUpdateAvailableRooms(!updateAvailableRooms)
     }
 
+    window.addEventListener('beforeunload', function (e: any){
+        console.log('here')
+        e.preventDefault()
+        e.returnValue = ''
+    })
+
     return(
         <div className='row'>
         <div className='col'>
