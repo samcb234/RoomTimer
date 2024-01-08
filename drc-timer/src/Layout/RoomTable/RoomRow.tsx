@@ -65,6 +65,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
             } else {
                 props.room.reservation.startTimer()
             }
+            props.room.runningTimer = !runTimer
             setRunTimer(!runTimer)
         }
 
@@ -92,32 +93,10 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
         }
     }
 
-    const StartStopButton = () => {
-        return (
-            <button className={!runTimer ? "btn btn-success" : "btn btn-danger"} onClick={() => startStopClick()}>{runTimer ? 'Stop' : 'Start'}</button>
-        )
-    }
-
-    const MenuDropDown = () => {
-        return (
-            <div className="dropdown mt-1">
-                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Additional Actions
-                </button>
-                <ul className="dropdown-menu">
-                    <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
-                    <li><a className="dropdown-item" href="#" onClick={() => emptyRoom()}>Finish Exam</a></li>
-                    {/* <li><a className="dropdown-item" href="#">Add Time To Exam (not implemented yet)</a></li> */}
-                    <li><a className="dropdown-item" href="#" onClick={() => changeRoomAvailability()}>{available ? 'Mark Room As Unavailable' : 'Mark Room as Available'}</a></li>
-                </ul>
-            </div>
-        )
-    }
-
     return (
         <>
             {props.useTable ?
-                <tr className={`table${rowColor}`}>
+                <tr className={`table-${rowColor}`}>
                     <th scope="row">
                         {props.room.name}
                     </th>
@@ -137,24 +116,48 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
                         {displayString}
                     </th>
                     <th>
-                        <StartStopButton />
+                        <button className={!runTimer ? "btn btn-success" : "btn btn-danger"} onClick={() => startStopClick()}>{runTimer ? 'Stop' : 'Start'}</button>
+
                     </th>
                     <th>
-                        <MenuDropDown />
+                        <div className="dropdown mt-1">
+                            <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Additional Actions
+                            </button>
+                            <ul className="dropdown-menu">
+                                <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
+                                <li><a className="dropdown-item" href="#" onClick={() => emptyRoom()}>Finish Exam</a></li>
+                                {/* <li><a className="dropdown-item" href="#">Add Time To Exam (not implemented yet)</a></li> */}
+                                <li><a className="dropdown-item" href="#" onClick={() => changeRoomAvailability()}>{available ? 'Mark Room As Unavailable' : 'Mark Room as Available'}</a></li>
+                            </ul>
+                        </div>
                     </th>
                 </tr>
                 :
                 <div className="col col-3 mb-2">
                     <div className={`card text-bg-${rowColor}`}>
                         <div className="card-body">
-                        <h3>{props.room.name}</h3>
-                        <>{props.room.reservation !== null && props.room.reservation !== undefined ?
-                            <h4>{`${props.room.reservation?.name} - ${props.room.reservation?.examName}`}</h4>
-                            :
-                            <></>}</>
-                        <h4>{displayString}</h4>
-                        <StartStopButton />
-                        <MenuDropDown />
+                            <div>
+                                <h3>{props.room.name}</h3>
+                                <>{props.room.reservation !== null && props.room.reservation !== undefined ?
+                                    <h4>{`${props.room.reservation?.name} - ${props.room.reservation?.examName}`}</h4>
+                                    :
+                                    <></>}</>
+                                <h4>{displayString}</h4>
+                            </div>
+                            <button className={!runTimer ? "btn btn-success" : "btn btn-danger"} onClick={() => startStopClick()}>{runTimer ? 'Stop' : 'Start'}</button>
+
+                            <div className="dropdown mt-1">
+                                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Additional Actions
+                                </button>
+                                <ul className="dropdown-menu">
+                                    <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
+                                    <li><a className="dropdown-item" href="#" onClick={() => emptyRoom()}>Finish Exam</a></li>
+                                    {/* <li><a className="dropdown-item" href="#">Add Time To Exam (not implemented yet)</a></li> */}
+                                    <li><a className="dropdown-item" href="#" onClick={() => changeRoomAvailability()}>{available ? 'Mark Room As Unavailable' : 'Mark Room as Available'}</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
