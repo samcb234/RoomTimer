@@ -6,6 +6,7 @@ class Room {
     privateRoom: boolean
     hasComputer: boolean
     available: boolean
+    runningTimer: boolean
 
     constructor(name: string, reservation: Reservation | null, privateRoom: boolean, hasComputer: boolean, available: boolean){
         this.name = name
@@ -13,6 +14,7 @@ class Room {
         this.privateRoom = privateRoom
         this.hasComputer = hasComputer
         this.available = available
+        this.runningTimer = false
     }
 
     updateAvailability(){
