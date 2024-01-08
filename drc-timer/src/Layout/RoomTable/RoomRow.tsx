@@ -3,7 +3,7 @@ import Room from "../../models/Room";
 import Reservation from "../../models/Reservation";
 import { formatTime } from "../../utils/formatTime";
 
-export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean }> = (props) => {
+export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean, completedRoom: any }> = (props) => {
     const [runTimer, setRunTimer] = useState(props.room.runningTimer)
     const [displayString, setDisplayString] = useState('room is empty')
     const [rowColor, setRowColor] = useState('')
@@ -32,6 +32,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
             }
             else if (timeLeft <= 0) {
                 setRowColor('danger')
+                props.completedRoom(props.room)
             }
         }
     }
