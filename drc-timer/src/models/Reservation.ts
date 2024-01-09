@@ -49,6 +49,10 @@ class Reservation {
         return formatTime(this.timeCheckSeconds())
     }
 
+    addTime(timeToAdd: number){
+        this.totalTimeOnExam = this.totalTimeOnExam + timeToAdd
+    }
+
 }
 
 export default Reservation
