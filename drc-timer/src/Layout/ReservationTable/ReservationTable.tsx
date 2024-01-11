@@ -24,7 +24,7 @@ export const ReservationTable: React.FC<{reservations: Reservation[], assign:any
                             Assign to Random Room
                         </th>
                         <th scope="col">
-                            Assing To Specific Room
+                            Assign To Specific Room
                         </th>
                     </tr>
                 </thead>

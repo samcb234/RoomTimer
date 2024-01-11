@@ -5,6 +5,7 @@ class Reservation {
      examName: string
      startTime: Date | null
      totalTimeOnExam: number //seconds
+     timeAdded: number
      privateRoom: boolean
      computerNeeded: boolean
      onlineExam: boolean
@@ -15,6 +16,7 @@ class Reservation {
         this.startTime = startTime
         this.privateRoom = privateRoom
         this.totalTimeOnExam = totalTimeOnExam
+        this.timeAdded = 0
         this.computerNeeded = computerNeeded
         this.onlineExam = onlineExam
     }
@@ -51,6 +53,7 @@ class Reservation {
 
     addTime(timeToAdd: number){
         this.totalTimeOnExam = this.totalTimeOnExam + timeToAdd
+        this.timeAdded = this.timeAdded + timeToAdd
     }
 
 }

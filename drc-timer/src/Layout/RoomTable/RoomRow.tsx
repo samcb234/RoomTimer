@@ -18,7 +18,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
         else if (props.room.reservation === undefined || props.room.reservation === null) {
             setRowColor('') //white
         }
-        else if (!runTimer) {
+        else if (!runTimer && props.room.reservation?.timeCheckSeconds() !== 0) {
             setRowColor('primary') //blue
         }
 
@@ -43,8 +43,12 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
 
     const updateTimer = () => {
         if (props.room.reservation !== null && props.room.reservation !== undefined) {
-            const reservation: Reservation = props.room.reservation
-            setDisplayString(formatTime(reservation.timeCheckSeconds()))
+            const timeLeft: number = props.room.reservation.timeCheckSeconds()
+            if(timeLeft <= 0){
+                setDisplayString('0:0:0')
+            } else {
+                setDisplayString(formatTime(timeLeft))
+            }
             return
         }
         setDisplayString('room is empty')
@@ -126,13 +130,16 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
                         {displayString}
                     </th>
                     <th>
+                        {props.room.reservation?.timeAdded === 0 ? <></> : <>{props.room.reservation?.timeAdded}</>}
+                    </th>
+                    <th>
                         <button className={!runTimer ? "btn btn-success" : "btn btn-danger"} onClick={() => startStopClick()}>{runTimer ? 'Stop' : 'Start'}</button>
 
                     </th>
                     <th>
                         <div className="dropdown mt-1">
                             <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Additional Actions
+                                Menu
                             </button>
                             <ul className="dropdown-menu">
                                 <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
@@ -159,7 +166,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
 
                             <div className="dropdown mt-1">
                                 <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Additional Actions
+                                    Menu
                                 </button>
                                 <ul className="dropdown-menu">
                                     <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
