@@ -1,61 +1,46 @@
 import { useEffect, useState } from "react";
 import Room from "../../models/Room";
 import Reservation from "../../models/Reservation";
-import { formatTime } from "../../utils/formatTime";
 
-export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean }> = (props) => {
+export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean, completedRoom: any }> = (props) => {
     const [runTimer, setRunTimer] = useState(props.room.runningTimer)
     const [displayString, setDisplayString] = useState('room is empty')
     const [rowColor, setRowColor] = useState('')
     const [available, setAvailable] = useState(props.room.available)
 
-    const updateRowColor = () => {
-        if (!available) {
-            setRowColor('secondary')
+    const updateRow = () => {
+        if(props.room.reservation === null || props.room.reservation === undefined){ //no reservation in room
+            setRowColor('primary')
+            setDisplayString('room is empty')
             return
-        }
-        else if (props.room.reservation === undefined || props.room.reservation === null) {
-            setRowColor('') //white
-        }
-        else if (!runTimer) {
-            setRowColor('primary') //blue
-        }
-
-        else if (runTimer) {
-            const reservation: Reservation = props.room.reservation
-            const timeLeft: number = reservation.timeCheckSeconds()
-            if (timeLeft > 600) {
+        } else {
+            const res: Reservation = props.room.reservation
+            setDisplayString(res.timeCheckString())
+            if(!runTimer){ //timer not running
+                setRowColor('')
+                return
+            }
+            else if(res.timeCheckSeconds() >= 600){
                 setRowColor('success')
+                return
             }
-            else if (0 < timeLeft && timeLeft <= 600) {
+            else if(res.timeCheckSeconds() < 600 && res.timeCheckSeconds() > 0){
                 setRowColor('warning')
+                return
             }
-            else if (timeLeft <= 0) {
+            else if(res.timeCheckSeconds() <= 0){
                 setRowColor('danger')
+                return
             }
         }
-    }
-
-    const updateTimer = () => {
-        if (props.room.reservation !== null && props.room.reservation !== undefined) {
-            const reservation: Reservation = props.room.reservation
-            setDisplayString(formatTime(reservation.timeCheckSeconds()))
-            return
-        }
-        setDisplayString('room is empty')
-
     }
 
     useEffect(() => {
 
-        const interval = setInterval(() => updateTimer(), 500)
+        const interval = setInterval(() => updateRow(), 500)
 
         return () => clearInterval(interval)
     })
-
-    useEffect(() => {
-        updateRowColor()
-    }, [displayString, available, runTimer])
 
     function startStopClick() {
         if (props.room.reservation !== undefined && props.room.reservation !== null) {
@@ -92,6 +77,12 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
         }
     }
 
+    function addTime(timeToAdd: number){
+        if(props.room.reservation !== null && props.room.reservation !== null){
+            props.room.reservation.addTime(timeToAdd)
+        }
+    }
+
     return (
         <>
             {props.useTable ?
@@ -115,18 +106,21 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
                         {displayString}
                     </th>
                     <th>
+                        {props.room.reservation?.timeAdded === 0 ? <></> : <>{props.room.reservation?.timeAdded}</>}
+                    </th>
+                    <th>
                         <button className={!runTimer ? "btn btn-success" : "btn btn-danger"} onClick={() => startStopClick()}>{runTimer ? 'Stop' : 'Start'}</button>
 
                     </th>
                     <th>
                         <div className="dropdown mt-1">
                             <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Additional Actions
+                                Menu
                             </button>
                             <ul className="dropdown-menu">
                                 <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
                                 <li><a className="dropdown-item" href="#" onClick={() => emptyRoom()}>Finish Exam</a></li>
-                                {/* <li><a className="dropdown-item" href="#">Add Time To Exam (not implemented yet)</a></li> */}
+                                <li><a className="dropdown-item" href="#" onClick={() => addTime(600)}>Add Time To Exam</a></li>
                                 <li><a className="dropdown-item" href="#" onClick={() => changeRoomAvailability()}>{available ? 'Mark Room As Unavailable' : 'Mark Room as Available'}</a></li>
                             </ul>
                         </div>
@@ -148,12 +142,12 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
 
                             <div className="dropdown mt-1">
                                 <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Additional Actions
+                                    Menu
                                 </button>
                                 <ul className="dropdown-menu">
                                     <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
                                     <li><a className="dropdown-item" href="#" onClick={() => emptyRoom()}>Finish Exam</a></li>
-                                    {/* <li><a className="dropdown-item" href="#">Add Time To Exam (not implemented yet)</a></li> */}
+                                    <li><a className="dropdown-item" href="#" onClick={() => addTime(600)}>Add Time To Exam</a></li>
                                     <li><a className="dropdown-item" href="#" onClick={() => changeRoomAvailability()}>{available ? 'Mark Room As Unavailable' : 'Mark Room as Available'}</a></li>
                                 </ul>
                             </div>

@@ -17,6 +17,8 @@ export const Homepage = ()=>{
 
     const [newRes, setNewRes] = useState<Reservation>()
 
+    const [completedRoom, setCompletedRoom] = useState<Room>()
+
     useEffect(()=>{
         const setUpReservations = () =>{
            if(newRes !== undefined){
@@ -47,6 +49,23 @@ export const Homepage = ()=>{
     useEffect(() => {
         setAvailableRooms(rooms.filter(room => {return room.available && (room.reservation === undefined || room.reservation === null)}))
     }, [updateAvailableRooms])
+
+    useEffect(() => {
+        const updateOrder = () =>{
+            if(completedRoom !== undefined){
+                const oldOrder: Room[] = rooms
+                const newOrder: Room[] = [completedRoom]
+                for(let i = 0; i < oldOrder.length; i ++){
+                    if(oldOrder[i].name !== completedRoom.name){
+                        newOrder.push(oldOrder[i])
+                    }
+                }
+                setRooms(newOrder)
+                setCompletedRoom(undefined)
+            }
+        }
+        updateOrder()
+    }, [completedRoom])
 
     function addReservation(res: Reservation){
         setNewRes(res)
@@ -105,7 +124,7 @@ export const Homepage = ()=>{
     return(
         <div className='row'>
         <div className='col'>
-          <RoomTable rooms={rooms}moveResToQueue={addReservation} updateAvailableRooms={startRoomUpdate}/>
+          <RoomTable rooms={rooms}moveResToQueue={addReservation} updateAvailableRooms={startRoomUpdate} completedRoom={setCompletedRoom}/>
         </div>
         <div className='col'>
             <AddResForm addReservation={addReservation} addDirectToRandomRoom={assignToRandomRoom} availableRooms={availableRooms} updateAvailableRooms={startRoomUpdate}/>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import Room from "../../models/Room"
 import { RoomRow } from "./RoomRow"
 
-export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAvailableRooms: any }> = (props) => {
+export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAvailableRooms: any, completedRoom: any }> = (props) => {
 
     const [useTable, setUseTable] = useState(true)
     return (
@@ -28,6 +28,9 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                                     Time
                                 </th>
                                 <th scope="col">
+                                    Added Time
+                                </th>
+                                <th scope="col">
                                     Start/Stop
                                 </th>
                                 <th scope="col">
@@ -37,14 +40,14 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                         </thead>
                         <tbody>
                             {props.rooms.map(room => (
-                                <RoomRow room={room} moveResToQueue={props.moveResToQueue} updateAvailableRooms={props.updateAvailableRooms} useTable={useTable} />
+                                <RoomRow room={room} moveResToQueue={props.moveResToQueue} updateAvailableRooms={props.updateAvailableRooms} useTable={useTable} completedRoom={props.completedRoom}/>
                             ))}
                         </tbody>
                     </table>
                     :
                     <div className="row">
                         {props.rooms.map(room =>(
-                                <RoomRow room={room} moveResToQueue={props.moveResToQueue} updateAvailableRooms={props.updateAvailableRooms} useTable={useTable} />
+                                <RoomRow room={room} moveResToQueue={props.moveResToQueue} updateAvailableRooms={props.updateAvailableRooms} useTable={useTable} completedRoom={props.completedRoom}/>
                                 ))}
                     </div>
                     }
