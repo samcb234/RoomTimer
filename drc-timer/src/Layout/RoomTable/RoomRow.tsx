@@ -1,70 +1,46 @@
 import { useEffect, useState } from "react";
 import Room from "../../models/Room";
 import Reservation from "../../models/Reservation";
-import { formatTime } from "../../utils/formatTime";
 
 export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean, completedRoom: any }> = (props) => {
     const [runTimer, setRunTimer] = useState(props.room.runningTimer)
     const [displayString, setDisplayString] = useState('room is empty')
     const [rowColor, setRowColor] = useState('')
     const [available, setAvailable] = useState(props.room.available)
-    const [addedTime, setAddedTime] = useState(0)
 
-    const updateRowColor = () => {
-        if (!available) {
-            setRowColor('secondary')
+    const updateRow = () => {
+        if(props.room.reservation === null || props.room.reservation === undefined){ //no reservation in room
+            setRowColor('primary')
+            setDisplayString('room is empty')
             return
-        }
-        else if (props.room.reservation === undefined || props.room.reservation === null) {
-            setRowColor('') //white
-        }
-        else if (!runTimer && props.room.reservation?.timeCheckSeconds() !== 0) {
-            setRowColor('primary') //blue
-        }
-
-        else if (runTimer) {
-            const reservation: Reservation = props.room.reservation
-            const timeLeft: number = reservation.timeCheckSeconds()
-            if (timeLeft > 600) {
+        } else {
+            const res: Reservation = props.room.reservation
+            setDisplayString(res.timeCheckString())
+            if(!runTimer){ //timer not running
+                setRowColor('')
+                return
+            }
+            else if(res.timeCheckSeconds() >= 600){
                 setRowColor('success')
+                return
             }
-            else if (0 < timeLeft && timeLeft <= 600) {
+            else if(res.timeCheckSeconds() < 600 && res.timeCheckSeconds() > 0){
                 setRowColor('warning')
+                return
             }
-            else if (timeLeft <= 0) {
+            else if(res.timeCheckSeconds() <= 0){
                 setRowColor('danger')
-                props.completedRoom(props.room)
-                props.room.reservation.pauseTime()
-                props.room.runningTimer = false
-                setRunTimer(false)
+                return
             }
         }
-    }
-
-    const updateTimer = () => {
-        if (props.room.reservation !== null && props.room.reservation !== undefined) {
-            const timeLeft: number = props.room.reservation.timeCheckSeconds()
-            if(timeLeft <= 0){
-                setDisplayString('0:0:0')
-            } else {
-                setDisplayString(formatTime(timeLeft))
-            }
-            return
-        }
-        setDisplayString('room is empty')
-
     }
 
     useEffect(() => {
 
-        const interval = setInterval(() => updateTimer(), 500)
+        const interval = setInterval(() => updateRow(), 500)
 
         return () => clearInterval(interval)
     })
-
-    useEffect(() => {
-        updateRowColor()
-    }, [displayString, available, runTimer])
 
     function startStopClick() {
         if (props.room.reservation !== undefined && props.room.reservation !== null) {
