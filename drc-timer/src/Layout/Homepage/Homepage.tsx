@@ -6,10 +6,10 @@ import Room from "../../models/Room"
 import { AddResForm } from "../AddResForm/AddResForm"
 import { template, templateList } from "../../utils/Data/RoomData"
 
-export const Homepage = ()=>{
-    
+export const Homepage = () => {
+
     const [reservations, setReservations] = useState<Reservation[]>([])
-    
+
     const [rooms, setRooms] = useState<Room[]>([])
     const [availableRooms, setAvailableRooms] = useState<Room[]>([])
 
@@ -19,23 +19,23 @@ export const Homepage = ()=>{
 
     const [completedRoom, setCompletedRoom] = useState<Room>()
 
-    useEffect(()=>{
-        const setUpReservations = () =>{
-           if(newRes !== undefined){
-            const r: Reservation[] = reservations
-            r.push(newRes)
-            setReservations(r)
-            setNewRes(undefined)
-           }
+    useEffect(() => {
+        const setUpReservations = () => {
+            if (newRes !== undefined) {
+                const r: Reservation[] = reservations
+                r.push(newRes)
+                setReservations(r)
+                setNewRes(undefined)
+            }
         }
         setUpReservations()
     }, [newRes, reservations])
 
 
-    useEffect(()=>{
-        const setUpRooms = ()=>{
+    useEffect(() => {
+        const setUpRooms = () => {
             const newRooms: Room[] = []
-            for(let i = 0; i < templateList.length; i ++){
+            for (let i = 0; i < templateList.length; i++) {
                 const template: template = templateList[i]
                 newRooms.push(new Room(template.name, null, template.privateRoom, template.hasComputer, true))
             }
@@ -47,16 +47,16 @@ export const Homepage = ()=>{
 
 
     useEffect(() => {
-        setAvailableRooms(rooms.filter(room => {return room.available && (room.reservation === undefined || room.reservation === null)}))
+        setAvailableRooms(rooms.filter(room => { return room.available && (room.reservation === undefined || room.reservation === null) }))
     }, [updateAvailableRooms])
 
     useEffect(() => {
-        const updateOrder = () =>{
-            if(completedRoom !== undefined){
+        const updateOrder = () => {
+            if (completedRoom !== undefined) {
                 const oldOrder: Room[] = rooms
                 const newOrder: Room[] = [completedRoom]
-                for(let i = 0; i < oldOrder.length; i ++){
-                    if(oldOrder[i].name !== completedRoom.name){
+                for (let i = 0; i < oldOrder.length; i++) {
+                    if (oldOrder[i].name !== completedRoom.name) {
                         newOrder.push(oldOrder[i])
                     }
                 }
@@ -67,30 +67,30 @@ export const Homepage = ()=>{
         updateOrder()
     }, [completedRoom])
 
-    function addReservation(res: Reservation){
+    function addReservation(res: Reservation) {
         setNewRes(res)
     }
 
 
-    function validRoomCheck(res: Reservation, room: Room){
-        if(room.reservation === null){
-            if(res.privateRoom){
+    function validRoomCheck(res: Reservation, room: Room) {
+        if (room.reservation === null) {
+            if (res.privateRoom) {
                 return room.privateRoom
             }
-            if(res.computerNeeded){
+            if (res.computerNeeded) {
                 return room.hasComputer
             }
             return room.available
         }
     }
 
-    function resFilter(name: string, examName: string, res: Reservation){
+    function resFilter(name: string, examName: string, res: Reservation) {
         return (name !== res.name) || (examName !== res.examName)
     }
 
-    function assignToRandomRoom(res: Reservation){
-        const validRooms: Room[] = rooms.filter((room)=>validRoomCheck(res, room))
-        if(validRooms.length >= 1){
+    function assignToRandomRoom(res: Reservation) {
+        const validRooms: Room[] = rooms.filter((room) => validRoomCheck(res, room))
+        if (validRooms.length >= 1) {
             const room = validRooms[0]
             room.reservation = res
             updateResQueue(res)
@@ -98,39 +98,58 @@ export const Homepage = ()=>{
         }
     }
 
-    function assignToSpecificRoom(res: Reservation, room: Room){
-        if(room.available && (room.reservation === undefined || room.reservation === null)){
+    function assignToSpecificRoom(res: Reservation, room: Room) {
+        if (room.available && (room.reservation === undefined || room.reservation === null)) {
             room.reservation = res
             updateResQueue(res)
             setUpdateAvailableRooms(!updateAvailableRooms)
         }
     }
 
-    function updateResQueue(res: Reservation){
-        setReservations(reservations.filter((reservation)=>resFilter(res.name, res.examName, reservation)))
+    function updateResQueue(res: Reservation) {
+        setReservations(reservations.filter((reservation) => resFilter(res.name, res.examName, reservation)))
         setUpdateAvailableRooms(!updateAvailableRooms)
     }
 
-    function startRoomUpdate(){
+    function startRoomUpdate() {
         setUpdateAvailableRooms(!updateAvailableRooms)
     }
 
-    window.addEventListener('beforeunload', function (e: any){
+    window.addEventListener('beforeunload', function (e: any) {
         console.log('here')
         e.preventDefault()
         e.returnValue = ''
     })
 
-    return(
-        <div className='row'>
-        <div className='col'>
-          <RoomTable rooms={rooms}moveResToQueue={addReservation} updateAvailableRooms={startRoomUpdate} completedRoom={setCompletedRoom}/>
+    return (
+        //     <div className='row'>
+        //     <div className='col'>
+        //       <RoomTable rooms={rooms}moveResToQueue={addReservation} updateAvailableRooms={startRoomUpdate} completedRoom={setCompletedRoom}/>
+        //     </div>
+        //     <div className='col'>
+        //         <AddResForm addReservation={addReservation} addDirectToRandomRoom={assignToRandomRoom} availableRooms={availableRooms} updateAvailableRooms={startRoomUpdate}/>
+        //       <ReservationTable reservations={reservations} assign={assignToRandomRoom} assignToSpecificRoom={assignToSpecificRoom} 
+        //       rooms={availableRooms}/>
+        //     </div>
+        //   </div>
+        <div className="container mt-2">
+            <AddResForm addReservation={addReservation} addDirectToRandomRoom={assignToRandomRoom} availableRooms={availableRooms} updateAvailableRooms={startRoomUpdate} />
+            <div className="accordion">
+                <div className="accordion-item">
+                    <h2 className="accordion-header">
+                        <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            {`Queued Reservations (${reservations.length})`}
+                        </button>
+                    </h2>
+                    <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div className="accordion-body">
+                            <ReservationTable reservations={reservations} assign={assignToRandomRoom} assignToSpecificRoom={assignToSpecificRoom}
+                                rooms={availableRooms} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <RoomTable rooms={rooms} moveResToQueue={addReservation} updateAvailableRooms={startRoomUpdate} completedRoom={setCompletedRoom} />
         </div>
-        <div className='col'>
-            <AddResForm addReservation={addReservation} addDirectToRandomRoom={assignToRandomRoom} availableRooms={availableRooms} updateAvailableRooms={startRoomUpdate}/>
-          <ReservationTable reservations={reservations} assign={assignToRandomRoom} assignToSpecificRoom={assignToSpecificRoom} 
-          rooms={availableRooms}/>
-        </div>
-      </div>
     )
 }
