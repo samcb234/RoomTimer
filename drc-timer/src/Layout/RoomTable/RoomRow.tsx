@@ -9,6 +9,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
     const [available, setAvailable] = useState(props.room.available)
 
     const updateRow = () => {
+        setRunTimer(props.room.runningTimer)
         if(!props.room.available){
             setRowColor('secondary')
             return

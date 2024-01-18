@@ -89,7 +89,7 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                 </div>
                 <div className="col">
                     <button className="btn btn-primary mb-2" onClick={()=> updateFilter(TENMINORLESS)}>
-                        10 Min Warning
+                        Under 10 Min
                     </button>
                 </div>
                 <div className="col">
