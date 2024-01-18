@@ -2,18 +2,23 @@ import { useEffect, useState } from "react";
 import Room from "../../models/Room";
 import Reservation from "../../models/Reservation";
 
-export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean, completedRoom: any }> = (props) => {
+export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailableRooms: any, useTable: boolean, completedRoom: any}> = (props) => {
     const [runTimer, setRunTimer] = useState(props.room.runningTimer)
-    const [displayString, setDisplayString] = useState('room is empty')
-    const [rowColor, setRowColor] = useState('')
+    const [displayString, setDisplayString] = useState('empty')
+    const [rowColor, setRowColor] = useState('primary')
     const [available, setAvailable] = useState(props.room.available)
 
     const updateRow = () => {
-        if(props.room.reservation === null || props.room.reservation === undefined){ //no reservation in room
-            setRowColor('primary')
-            setDisplayString('room is empty')
+        if(!props.room.available){
+            setRowColor('secondary')
             return
-        } else {
+        }
+        else if(props.room.reservation === null || props.room.reservation === undefined){ //no reservation in room
+            setRowColor('primary')
+            setDisplayString('empty')
+            return
+        }
+        else {
             const res: Reservation = props.room.reservation
             setDisplayString(res.timeCheckString())
             if(!runTimer){ //timer not running
@@ -37,7 +42,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
 
     useEffect(() => {
 
-        const interval = setInterval(() => updateRow(), 500)
+        const interval = setInterval(() => updateRow(), 250)
 
         return () => clearInterval(interval)
     })
@@ -106,7 +111,8 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
                         {displayString}
                     </th>
                     <th>
-                        {props.room.reservation?.timeAdded === 0 ? <></> : <>{props.room.reservation?.timeAdded}</>}
+                        {props.room.reservation?.timeAdded === 0 || props.room.reservation === undefined || props.room.reservation === null ? 
+                        <></> : <>{props.room.reservation.timeAdded / 60}</>}
                     </th>
                     <th>
                         <button className={!runTimer ? "btn btn-success" : "btn btn-danger"} onClick={() => startStopClick()}>{runTimer ? 'Stop' : 'Start'}</button>
