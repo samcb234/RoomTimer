@@ -73,27 +73,27 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                     </button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary mb-2" onClick={()=> updateFilter(ALLROOMS)}>
+                    <button className={filter===ALLROOMS? "btn btn-primary mb-2": "btn btn-secondary mb-2"} onClick={()=> updateFilter(ALLROOMS)}>
                         All Rooms
                     </button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary mb-2" onClick={()=> updateFilter(OPENROOMS)}>
+                    <button className={filter===OPENROOMS? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(OPENROOMS)}>
                         Open Rooms
                     </button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary mb-2" onClick={()=> updateFilter(RUNNINGROOMS)}>
+                    <button className={filter===RUNNINGROOMS? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(RUNNINGROOMS)}>
                         Running Rooms
                     </button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary mb-2" onClick={()=> updateFilter(TENMINORLESS)}>
+                    <button className={filter===TENMINORLESS? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(TENMINORLESS)}>
                         Under 10 Min
                     </button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary mb-2" onClick={()=> updateFilter(PASTTIME)}>
+                    <button className={filter===PASTTIME? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(PASTTIME)}>
                         Finished Rooms
                     </button>
                 </div>
