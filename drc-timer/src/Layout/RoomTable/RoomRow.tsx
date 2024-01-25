@@ -67,6 +67,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
 
     function emptyRoom() {
         props.room.reservation = null
+        props.room.runningTimer = false
         props.updateAvailableRooms()
         setRunTimer(false)
     }
