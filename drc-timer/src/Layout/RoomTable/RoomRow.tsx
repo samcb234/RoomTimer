@@ -21,7 +21,11 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
         }
         else {
             const res: Reservation = props.room.reservation
-            setDisplayString(res.timeCheckString())
+            if(res.onlineExam){
+                setDisplayString('Online')
+            }else{
+                setDisplayString(res.timeCheckString())
+            }
             if(!runTimer){ //timer not running
                 setRowColor('')
                 return

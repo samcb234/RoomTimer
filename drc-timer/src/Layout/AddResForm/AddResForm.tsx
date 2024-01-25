@@ -85,7 +85,10 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
                 </div>
                 <div className="col">
                     <div className="input-group mb-3">
-                        <input className="form-check-input" type="checkbox" value="" onClick={() => { setOnlineExam(!onlineExam) }} />
+                        {onlineExam?
+                        <input className="form-check-input" type="checkbox" value="" onClick={() => { setOnlineExam(!onlineExam) }} checked/>
+                        :
+                        <input className="form-check-input" type="checkbox" value="" onClick={() => { setOnlineExam(!onlineExam) }} />}
                         <label className="form-check-label">
                             Online Exam
                         </label>

@@ -115,6 +115,8 @@ export const Homepage = ()=>{
         setUpdateAvailableRooms(!updateAvailableRooms)
     }
 
+    document.title='DRC Exam Timer'
+
     window.addEventListener('beforeunload', function (e: any){
         console.log('here')
         e.preventDefault()
