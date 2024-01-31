@@ -9,6 +9,7 @@ class Reservation {
      privateRoom: boolean
      computerNeeded: boolean
      onlineExam: boolean
+     tenMinWarningGiven: boolean
 
     constructor(name: string, examName: string, startTime: Date | null, totalTimeOnExam: number, privateRoom: boolean, computerNeeded: boolean, onlineExam: boolean){
         this.name = name
@@ -19,6 +20,7 @@ class Reservation {
         this.timeAdded = 0
         this.computerNeeded = computerNeeded
         this.onlineExam = onlineExam
+        this.tenMinWarningGiven = false
     }
 
     //returns the total time on the exam if the exam isn't running, or the time left

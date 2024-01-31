@@ -16,7 +16,7 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
 
     const filterRoomByTime = (room: Room, time: number): boolean => {
         if(room.reservation !== undefined && room.reservation !== null){
-            return time < 0 ? room.runningTimer : room.runningTimer && room.reservation?.timeCheckSeconds() < time
+            return room.reservation?.timeCheckSeconds() < time
         }
         return false
     }
@@ -31,7 +31,7 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                     return room.reservation === undefined || room.reservation === null
                 }
                 case RUNNINGROOMS: {
-                    return filterRoomByTime(room, -1)
+                    return room.runningTimer
                 }
                 case TENMINORLESS: {
                     return filterRoomByTime(room, 600)

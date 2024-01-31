@@ -8,6 +8,9 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
     const [rowColor, setRowColor] = useState('primary')
     const [available, setAvailable] = useState(props.room.available)
 
+    const [buttonString, setButtonString] = useState('Start')
+    const [buttonColorString, setButtonColorString] = useState('success')
+
     const updateRow = () => {
         setRunTimer(props.room.runningTimer)
         if(!props.room.available){
@@ -36,6 +39,11 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
             }
             else if(res.timeCheckSeconds() < 600 && res.timeCheckSeconds() > 0){
                 setRowColor('warning')
+                if(!res.tenMinWarningGiven){
+                    startStopClick()
+                    setButtonString('Give 10 Min Warning')
+                    setButtonColorString('warning')
+                }
                 return
             }
             else if(res.timeCheckSeconds() <= 0){
@@ -52,12 +60,21 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
         return () => clearInterval(interval)
     })
 
+    
+
     function startStopClick() {
         if (props.room.reservation !== undefined && props.room.reservation !== null) {
             if (runTimer) {
                 props.room.reservation.pauseTime()
+                setButtonString('Start')
+                setButtonColorString('success')
             } else {
                 props.room.reservation.startTimer()
+                setButtonString('Pause')
+                setButtonColorString('danger')
+                if(!props.room.reservation.tenMinWarningGiven && props.room.reservation.timeCheckSeconds() <= 600){
+                    props.room.reservation.tenMinWarningGiven = true
+                }
             }
             props.room.runningTimer = !runTimer
             setRunTimer(!runTimer)
@@ -121,7 +138,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
                         <></> : <>{props.room.reservation.timeAdded / 60}</>}
                     </th>
                     <th>
-                        <button className={!runTimer ? "btn btn-success" : "btn btn-danger"} onClick={() => startStopClick()}>{runTimer ? 'Stop' : 'Start'}</button>
+                        <button className={`btn btn-${buttonColorString}`} onClick={() => startStopClick()}>{buttonString}</button>
 
                     </th>
                     <th>

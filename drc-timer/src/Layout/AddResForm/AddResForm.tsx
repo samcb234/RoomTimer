@@ -63,7 +63,7 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
             </div>
             <div className="input-group mb-3">
                 <span className="input-group-text" id="basic-addon2">Exam Length</span>
-                <input type="number" className="form-control" placeholder="Exam Length (minutes)" aria-label="Username" aria-describedby="basic-addon2"
+                <input type="number" className="form-control" placeholder="Total Exam Length (minutes)" aria-label="Username" aria-describedby="basic-addon2"
                     value={totalTimeOnExam === 0 ? '' : totalTimeOnExam} onChange={e => setTotalTimeOnExam(Number(e.target.value))} />
             </div>
             <div className="row">
