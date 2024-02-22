@@ -116,7 +116,7 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                                     Time
                                 </th>
                                 <th scope="col">
-                                    Added Time
+                                    10 Min Warning
                                 </th>
                                 <th scope="col">
                                     Start/Stop
