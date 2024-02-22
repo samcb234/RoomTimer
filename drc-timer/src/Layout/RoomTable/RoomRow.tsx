@@ -84,7 +84,7 @@ export const RoomRow: React.FC<{ room: Room, moveResToQueue: any, updateAvailabl
 
     useEffect(() => {
 
-        const interval = setInterval(() => updateRow(), 250)
+        const interval = setInterval(() => updateRow(), 100)
 
         return () => clearInterval(interval)
     })
