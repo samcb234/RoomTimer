@@ -2,8 +2,10 @@ import { useState } from "react"
 import Reservation from "../../models/Reservation"
 import Room from "../../models/Room"
 import { AddToSpecificRoomButton } from "../../utils/AddToSpecificRoomButton/AddToSpecificRoomButton"
+import { useDispatch } from "react-redux"
+import { createReservation } from "../../reducers/ReservationReducer"
 
-export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: any, availableRooms: Room[], updateAvailableRooms: any }> = (props) => {
+export const AddResForm: React.FC<{ addDirectToRandomRoom: any}> = (props) => {
     const [name, setName] = useState('')
     const [examName, setExamName] = useState('')
     const [totalTimeOnExam, setTotalTimeOnExam] = useState(0)
@@ -11,34 +13,42 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
     const [computerNeeded, setComputerNeeded] = useState(false)
     const [onlineExam, setOnlineExam] = useState(false)
 
+    const dispatch = useDispatch()
 
     function addRes() {
-        const res: Reservation = new Reservation(name, examName, null, totalTimeOnExam * 60,
-            privateRoom, computerNeeded, onlineExam)
-        props.addReservation(res)
-        resetForm()
-    }
-
-    function addDirectToSpecificRoom(room: Room) {
-        if (room.available && (room.reservation === null || room.reservation === undefined)) {
-            const computerCheck: boolean = computerNeeded ? room.hasComputer : true
-            const privateRoomCheck: boolean = privateRoom ? room.privateRoom : true
-
-            if (computerCheck && privateRoomCheck) {
-                room.reservation = new Reservation(name, examName, null, totalTimeOnExam * 60,
-                    privateRoom, computerCheck, onlineExam)
-            }
-
-            resetForm()
-            props.updateAvailableRooms()
+        const body = {
+            resName: name,
+            examName: examName,
+            examLength: totalTimeOnExam * 60,
+            privateRoom: privateRoom,
+            needsComputer: computerNeeded,
+            isOnline: onlineExam,
+            isAssigned: false
         }
-    }
-
-    function addDirectToRandomRoom() {
-        props.addDirectToRandomRoom(new Reservation(name, examName, null,
-            totalTimeOnExam * 60, privateRoom, computerNeeded, onlineExam))
+        dispatch(createReservation(body))
         resetForm()
     }
+
+    // function addDirectToSpecificRoom(room: Room) {
+    //     if (room.available && (room.reservation === null || room.reservation === undefined)) {
+    //         const computerCheck: boolean = computerNeeded ? room.hasComputer : true
+    //         const privateRoomCheck: boolean = privateRoom ? room.privateRoom : true
+
+    //         if (computerCheck && privateRoomCheck) {
+    //             room.reservation = new Reservation(name, examName, null, totalTimeOnExam * 60,
+    //                 privateRoom, computerCheck, onlineExam)
+    //         }
+
+    //         resetForm()
+    //         props.updateAvailableRooms()
+    //     }
+    // }
+
+    // function addDirectToRandomRoom() {
+    //     props.addDirectToRandomRoom(new Reservation(name, examName, null,
+    //         totalTimeOnExam * 60, privateRoom, computerNeeded, onlineExam))
+    //     resetForm()
+    // }
 
     function resetForm() {
         setName('')
@@ -103,10 +113,10 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
                     <button className="btn btn-primary" onClick={() => addRes()}>Add Reservation</button>
                 </div>
                 <div className="col">
-                    <button className="btn btn-primary" onClick={() => addDirectToRandomRoom()}>Add To Random Room</button>
+                    {/* <button className="btn btn-primary" onClick={() => addDirectToRandomRoom()}>Add To Random Room</button> */}
                 </div>
                 <div className="col">
-                    <AddToSpecificRoomButton rooms={props.availableRooms} assign={addDirectToSpecificRoom} buttonString="Create And Add To Specific Room" />
+                    {/* <AddToSpecificRoomButton rooms={props.availableRooms} assign={addDirectToSpecificRoom} buttonString="Create And Add To Specific Room" /> */}
                 </div>
             </div>
         </div>
