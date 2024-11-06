@@ -12,8 +12,7 @@ export interface RoomState {
 
 export interface ReservationState {
     reservationReducer: {
-        unseatedReservations: Reservation[]
-        seatedReservations: Reservation[]
+        reservations: Reservation[]
         reservationId: number
     }
 }

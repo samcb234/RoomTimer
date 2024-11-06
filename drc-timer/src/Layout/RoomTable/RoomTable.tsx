@@ -14,14 +14,14 @@ const PASTTIME: string = 'times up'
 export const RoomTable: React.FC<{}> = (props) => {
     const dispatch = useDispatch()
     const {rooms} = useSelector((state: RoomState) => state.roomReducer)
-    const {seatedReservations} = useSelector((state: ReservationState)=> state.reservationReducer)
+    const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
     const [useTable, setUseTable] = useState(true)
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms)
     const [filter, setFilter] = useState(ALLROOMS)
 
     const filterRoomByTime = (room: Room, time: number): boolean => {
         if(room.reservation !== undefined && room.reservation !== null && room.reservation !== -1){
-            const res = seatedReservations.find(r=>r.id===room.reservation)
+            const res = reservations.find(r=>r.id===room.reservation)
             if(res){
                 return res.totalTimeOnExam < time
             }

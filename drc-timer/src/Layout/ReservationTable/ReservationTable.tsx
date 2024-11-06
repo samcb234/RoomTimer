@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 import { ReservationState } from "../../stores"
 
 export const ReservationTable: React.FC<{}> = (props)=>{
-    const {unseatedReservations} = useSelector((state: ReservationState)=> state.reservationReducer)
+    const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
 
     return(
         <div className="container mt-3">
@@ -31,7 +31,7 @@ export const ReservationTable: React.FC<{}> = (props)=>{
                     </tr>
                 </thead>
                 <tbody>
-                    {unseatedReservations.map(reservation =>(
+                    {reservations.filter(res=> !res.assigned).map(reservation =>(
                         <ReservationRow reservation={reservation} />
                     ))}
                 </tbody>

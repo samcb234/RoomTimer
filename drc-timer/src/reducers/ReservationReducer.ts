@@ -2,14 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import Reservation from "../models/Reservation";
 
 interface ReservationState{
-    unseatedReservations: Reservation[];
-    seatedReservations: Reservation[];
+    reservations: Reservation[];
     reservationId: number;
 }
 
 const initialState: ReservationState = {
-    unseatedReservations: [],
-    seatedReservations: [],
+    reservations: [],
     reservationId: 1,
 }
 
@@ -27,92 +25,71 @@ const reservationSlice = createSlice({
                 onlineExam: action.payload.isOnline,
                 timeAdded: 0,
                 tenMinWarningGiven: false,
-                running: false}
-            if(action.payload.isAssigned){
-                state.seatedReservations = [...state.seatedReservations, newReservation]
-            } else {
-                state.unseatedReservations = [...state.unseatedReservations, newReservation]
-            }
-            state.reservationId += 1
+                running: false,
+                assigned: false}
+            state.reservationId = state.reservationId + 1
+            state.reservations = [...state.reservations, newReservation]   
         },
         assignReservationToRoom: (state, action) => {
-            const reservation = state.unseatedReservations.find(res => res.id === action.payload.id)
-            if(reservation !== undefined){
-                const newUnseated = state.unseatedReservations.filter(res => res.id !== action.payload.id)
-                state.seatedReservations = [...state.seatedReservations, reservation]
-                state.unseatedReservations = newUnseated
-            }
-        },
-        returnReservationToUnseated: (state, action)=> {
-            const reservation = state.seatedReservations.find(res => res.id === action.payload.id)
-            if(reservation !== undefined) {
-                const newSeated = state.seatedReservations.filter(res => res !== action.payload.id)
-                state.unseatedReservations = [...state.unseatedReservations, {...reservation, running:false}]
-                state.seatedReservations = newSeated
-            }
+            const updatedReservations = state.reservations.map(res=> {
+                if(res.id === action.payload.id){
+                    return {...res, assigned: !res.assigned}
+                }
+                else{
+                    return res
+                }
+            })
+            state.reservations = updatedReservations
         },
         deleteExam: (state, action) => {
-            const updatedUnSeated = state.unseatedReservations.filter(
-                res => res.id !== action.payload.id
-            )
-            const updatedSeated = state.seatedReservations.filter(
-                res=> res.id !== action.payload.id
-            )
-            state.unseatedReservations = updatedUnSeated
-            state.seatedReservations = updatedSeated
+            const updatedReservations = state.reservations.filter(res=>res.id!== action.payload.id)
+            state.reservations = updatedReservations
         },
         addTimeToExam: (state, action) => {
-            const updatedUnseated = state.unseatedReservations.map(res=>{
-                if(res.id !== action.payload.id){
+            const updatedReservations = state.reservations.map(res=>{
+                if(res.id===action.payload.id){
+                    return {...res, totalTimeOnExam: res.totalTimeOnExam + action.payload.timeToAdd}
+                }
+                else {
                     return res
-                } else{
-                    return {...res, timeAdded: res.timeAdded + action.payload.time, totalTimeOnExam: res.totalTimeOnExam + action.payload.time}
                 }
             })
-            const updateSeated = state.seatedReservations.map(res=>{
-                if(res.id !== action.payload.id){
-                    return res
-                } else{
-                    return {...res, timeAdded: res.timeAdded + action.payload.time, totalTimeOnExam: res.totalTimeOnExam + action.payload.time}
-                }
-            })
-            state.unseatedReservations = updatedUnseated
-            state.seatedReservations = updateSeated
+            state.reservations = updatedReservations
         },
         startOrStopTimer: (state, action) => {
-            const updatedReservations = state.seatedReservations.map(res=> {
+            const updatedReservations = state.reservations.map(res=> {
                 if(res.id === action.payload.id){
                     return {...res, running: !res.running}
                 }else{
                     return res
                 }
             })
-            state.seatedReservations = updatedReservations
+            state.reservations = updatedReservations
         },
         updateUnseatedReservation: (state, action) => {
-            const updatedUnseated = state.unseatedReservations.map(res=>{
+            const updatedUnseated = state.reservations.map(res=>{
                 if(res.id === action.payload.id){
                     return action.payload
                 } else{
                     return res
                 }
             })
-            state.unseatedReservations = updatedUnseated
+            state.reservations = updatedUnseated
         },
         updateSeatedReservation: (state, action) => {
 
-            const updatedSeated = state.seatedReservations.map(res=> {
+            const updatedSeated = state.reservations.map(res=> {
                 if(res.id === action.payload.id){
                     return action.payload
                 } else {
                     return res
                 }
             })
-            state.seatedReservations = updatedSeated
+            state.reservations = updatedSeated
         }
     }
 })
 
-export const {createReservation, assignReservationToRoom, returnReservationToUnseated,
+export const {createReservation, assignReservationToRoom,
 deleteExam, addTimeToExam, startOrStopTimer, updateSeatedReservation, updateUnseatedReservation} = reservationSlice.actions
 export default reservationSlice.reducer

@@ -3,7 +3,7 @@ import Room from "../../models/Room";
 import Reservation from "../../models/Reservation";
 import { useDispatch, useSelector } from "react-redux";
 import { ReservationState } from "../../stores";
-import { addTimeToExam, deleteExam, returnReservationToUnseated, startOrStopTimer, updateSeatedReservation } from "../../reducers/ReservationReducer";
+import { addTimeToExam, deleteExam, startOrStopTimer, updateSeatedReservation } from "../../reducers/ReservationReducer";
 import { setReservationToNull, updateRoomAvailability } from "../../reducers/RoomReducer";
 import { Clock } from "../../utils/clock";
 import { formatTime } from "../../utils/formatTime";
@@ -19,19 +19,23 @@ const presets = {"running": {message: "Pause", color: "danger"},
 
 export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> = (props) => {
     const dispatch = useDispatch()
-    const {seatedReservations} = useSelector((state: ReservationState)=> state.reservationReducer)
+    const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
     const [reservation, setReservation] = useState<Reservation | null>()
 
     const [rowColor, setRowColor] = useState<string>('primary')
     const [displayString, setDisplayString] = useState<string>('empty')
     const [buttonColorString, setButtonColorString] = useState<string>('success')
+    const [buttonString, setButtonString] = useState<string>('Start')
 
-    const [timeLeft, setTimeLeft] = useState<number>(0)
 
     const clock = props.clock
 
     const tick = () => {
-        setTimeLeft(timeLeft=> timeLeft-1)
+        setReservation(prevRes=>
+            prevRes?
+            {...prevRes, totalTimeOnExam: prevRes.running? prevRes.totalTimeOnExam - 1 : prevRes.totalTimeOnExam}
+            :
+            prevRes)
     }
 
     useEffect(()=> {
@@ -42,7 +46,54 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
         }
     }, [])
 
-    
+    useEffect(()=> {
+        const newRes = reservations.find(res=> res.id === props.room.reservation && res.assigned)
+        const d = new Date()
+        const updatedReservation = newRes?
+        {...newRes, 
+            totalTimeOnExam: newRes.running && newRes.startTime? 
+            newRes.totalTimeOnExam - Math.abs((newRes.startTime.getTime() - d.getTime())/1000)
+        : newRes.totalTimeOnExam}
+        : newRes
+        setReservation(updatedReservation)
+        return ()=> {
+            if(reservation){
+                dispatch(updateSeatedReservation({...reservation}))
+            }
+        }
+    }, [props.room])
+
+
+    const startStopClick = ()=> {
+        setReservation(prevRes=>
+            prevRes ?
+            {...prevRes, running: !prevRes.running,
+            startTime: !prevRes.running? new Date() : prevRes.startTime}
+            :prevRes)
+    }
+
+    const moveResToQueue = () => {
+        if(reservation){
+            dispatch(updateSeatedReservation({...reservation, assigned: false, running: false}))
+            dispatch(setReservationToNull({name: props.room.name}))
+        }
+    }
+
+    const emptyRoom = () => {
+        if(reservation){
+            dispatch(deleteExam({id: reservation.id}))
+            dispatch(setReservationToNull({name: props.room.name}))
+        }
+    }
+
+    const addTime = (timeToAdd: number)=> {
+        setReservation(prevRes=>
+            prevRes? {...prevRes, totalTimeOnExam: prevRes.totalTimeOnExam + timeToAdd}: prevRes)
+    }
+
+    const changeRoomAvailability = () => {
+        dispatch(updateRoomAvailability({name: props.room.name}))
+    }
 
     return (
         <>

@@ -12,6 +12,7 @@ interface Reservation {
      onlineExam: boolean
      tenMinWarningGiven: boolean
      running: boolean
+     assigned: boolean
 
     // constructor(id: number, name: string, examName: string, startTime: Date | null, totalTimeOnExam: number, privateRoom: boolean, computerNeeded: boolean, onlineExam: boolean){
     //     this.id = id
