@@ -2,43 +2,93 @@ import { useState } from "react"
 import Reservation from "../../models/Reservation"
 import Room from "../../models/Room"
 import { AddToSpecificRoomButton } from "../../utils/AddToSpecificRoomButton/AddToSpecificRoomButton"
+import { useDispatch, useSelector } from "react-redux"
+import { createReservation } from "../../reducers/ReservationReducer"
+import { ReservationState, RoomState } from "../../stores"
+import { addReservationToRoom } from "../../reducers/RoomReducer"
 
-export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: any, availableRooms: Room[], updateAvailableRooms: any }> = (props) => {
+export const AddResForm: React.FC<{}> = (props) => {
     const [name, setName] = useState('')
     const [examName, setExamName] = useState('')
     const [totalTimeOnExam, setTotalTimeOnExam] = useState(0)
     const [privateRoom, setPrivateRoom] = useState(false)
-    const [computerNeeded, setComputerNeeded] = useState(false)
+    const [computerNeeded, setComputerNeeded] = useState<boolean>(false)
     const [onlineExam, setOnlineExam] = useState(false)
 
+    const {rooms} = useSelector((state: RoomState)=> state.roomReducer)
+    const {reservationId} = useSelector((state: ReservationState)=> state.reservationReducer)
+    const dispatch = useDispatch()
 
     function addRes() {
-        const res: Reservation = new Reservation(name, examName, null, totalTimeOnExam * 60,
-            privateRoom, computerNeeded, onlineExam)
-        props.addReservation(res)
+        const body = {
+            resName: name,
+            examName: examName,
+            examLength: totalTimeOnExam * 60,
+            privateRoom: privateRoom,
+            needsComputer: computerNeeded,
+            isOnline: onlineExam,
+            isAssigned: false
+        }
+        if(name !== '' && examName !== '' && totalTimeOnExam !== 0) {
+        dispatch(createReservation(body))
         resetForm()
-    }
-
-    function addDirectToSpecificRoom(room: Room) {
-        if (room.available && (room.reservation === null || room.reservation === undefined)) {
-            const computerCheck: boolean = computerNeeded ? room.hasComputer : true
-            const privateRoomCheck: boolean = privateRoom ? room.privateRoom : true
-
-            if (computerCheck && privateRoomCheck) {
-                room.reservation = new Reservation(name, examName, null, totalTimeOnExam * 60,
-                    privateRoom, computerCheck, onlineExam)
-            }
-
-            resetForm()
-            props.updateAvailableRooms()
         }
     }
 
-    function addDirectToRandomRoom() {
-        props.addDirectToRandomRoom(new Reservation(name, examName, null,
-            totalTimeOnExam * 60, privateRoom, computerNeeded, onlineExam))
+    function addDirectToSpecificRoom(roomName: string) {
+        const body = {
+            resName: name,
+            examName: examName,
+            examLength: totalTimeOnExam * 60,
+            privateRoom: privateRoom,
+            needsComputer: computerNeeded,
+            isOnline: onlineExam,
+            isAssigned: true
+        }
+        if(name !== '' && examName !== '' && totalTimeOnExam !== 0) {
+        dispatch(createReservation(body))
+        dispatch(addReservationToRoom({reservation: reservationId, roomName: roomName, privateRoom: body.privateRoom, needsComputer: body.needsComputer, random: false}))
         resetForm()
+        }
+
     }
+
+    function addDirectToRandomRoom() {
+        const body = {
+            resName: name,
+            examName: examName,
+            examLength: totalTimeOnExam * 60,
+            privateRoom: privateRoom,
+            needsComputer: computerNeeded,
+            isOnline: onlineExam,
+            isAssigned: true
+        }
+        if(name !== '' && examName !== '' && totalTimeOnExam !== 0) {
+        dispatch(createReservation(body))
+        dispatch(addReservationToRoom({reservation: reservationId, name: 'asdf', privateRoom: body.privateRoom, needsComputer: body.needsComputer, random: true}))
+        resetForm()
+        }
+    }
+    // function addDirectToSpecificRoom(room: Room) {
+    //     if (room.available && (room.reservation === null || room.reservation === undefined)) {
+    //         const computerCheck: boolean = computerNeeded ? room.hasComputer : true
+    //         const privateRoomCheck: boolean = privateRoom ? room.privateRoom : true
+
+    //         if (computerCheck && privateRoomCheck) {
+    //             room.reservation = new Reservation(name, examName, null, totalTimeOnExam * 60,
+    //                 privateRoom, computerCheck, onlineExam)
+    //         }
+
+    //         resetForm()
+    //         props.updateAvailableRooms()
+    //     }
+    // }
+
+    // function addDirectToRandomRoom() {
+    //     props.addDirectToRandomRoom(new Reservation(name, examName, null,
+    //         totalTimeOnExam * 60, privateRoom, computerNeeded, onlineExam))
+    //     resetForm()
+    // }
 
     function resetForm() {
         setName('')
@@ -47,6 +97,12 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
         setPrivateRoom(false)
         setComputerNeeded(false)
         setOnlineExam(false)
+    }
+
+    function validRoom(room: Room): boolean {
+        return room.reservation === -1 && room.available && 
+        !(privateRoom && !room.privateRoom) &&
+        !(computerNeeded && !room.hasComputer)
     }
 
     return (
@@ -69,7 +125,7 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
             <div className="row">
                 <div className="col">
                     <div className="input-group mb-3">
-                        <input className="form-check-input" type="checkbox" value="" onClick={() => setPrivateRoom(!privateRoom)} />
+                        <input className="form-check-input" type="checkbox" value="" checked={privateRoom} onClick={() => setPrivateRoom(!privateRoom)} />
                         <label className="form-check-label">
                             Private Room
                         </label>
@@ -77,7 +133,7 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
                 </div>
                 <div className="col">
                     <div className="input-group mb-3">
-                        <input className="form-check-input" type="checkbox" value="" onClick={() => setComputerNeeded(!computerNeeded)} />
+                        <input className="form-check-input" type="checkbox" value="" checked={computerNeeded} onClick={() => setComputerNeeded(!computerNeeded)} />
                         <label className="form-check-label">
                             Computer Accomodation
                         </label>
@@ -106,7 +162,7 @@ export const AddResForm: React.FC<{ addReservation: any, addDirectToRandomRoom: 
                     <button className="btn btn-primary" onClick={() => addDirectToRandomRoom()}>Add To Random Room</button>
                 </div>
                 <div className="col">
-                    <AddToSpecificRoomButton rooms={props.availableRooms} assign={addDirectToSpecificRoom} buttonString="Create And Add To Specific Room" />
+                    <AddToSpecificRoomButton rooms={rooms.filter(room=> validRoom(room))} assign={addDirectToSpecificRoom} buttonString="Create And Add To Specific Room" />
                 </div>
             </div>
         </div>

@@ -8,7 +8,7 @@ export const AddToSpecificRoomButton: React.FC<{ rooms: Room[], assign: any, but
             </button>
             <ul className="dropdown-menu">
                 {props.rooms.map(room => (
-                    <li><a className="dropdown-item" href="#" onClick={()=>props.assign(room)}>{room.name}</a></li>
+                    <li><a className="dropdown-item" href="#" onClick={()=>props.assign(room.name)}>{room.name}</a></li>
                 ))}
             </ul>
         </div>

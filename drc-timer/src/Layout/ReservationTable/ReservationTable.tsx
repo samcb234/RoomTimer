@@ -2,9 +2,11 @@ import { useEffect, useState } from "react"
 import Reservation from "../../models/Reservation"
 import { ReservationRow } from "./ReservationRow"
 import Room from "../../models/Room"
+import { useSelector } from "react-redux"
+import { ReservationState } from "../../stores"
 
-export const ReservationTable: React.FC<{reservations: Reservation[], assign:any, assignToSpecificRoom: any, rooms: Room[]}> = (props)=>{
-    
+export const ReservationTable: React.FC<{}> = (props)=>{
+    const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
 
     return(
         <div className="container mt-3">
@@ -29,9 +31,8 @@ export const ReservationTable: React.FC<{reservations: Reservation[], assign:any
                     </tr>
                 </thead>
                 <tbody>
-                    {props.reservations.map(reservation =>(
-                        <ReservationRow reservation={reservation} assignToRandomRoom={props.assign} assignToSpecificRoom={props.assignToSpecificRoom}
-                        rooms={props.rooms}/>
+                    {reservations.filter(res=> !res.assigned).map(reservation =>(
+                        <ReservationRow reservation={reservation} />
                     ))}
                 </tbody>
             </table>

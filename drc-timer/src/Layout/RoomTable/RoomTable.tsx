@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import Room from "../../models/Room"
 import { RoomRow } from "./RoomRow"
+import { useDispatch, useSelector } from "react-redux"
+import { ReservationState, RoomState } from "../../stores"
+import ClockFactory from "../../utils/clockFactory"
 
 const ALLROOMS: string = 'all'
 const OPENROOMS: string = 'open'
@@ -8,18 +11,25 @@ const RUNNINGROOMS: string = 'running'
 const TENMINORLESS: string = 'under 10'
 const PASTTIME: string = 'times up'
 
-export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAvailableRooms: any, completedRoom: any }> = (props) => {
-
+export const RoomTable: React.FC<{}> = (props) => {
+    const dispatch = useDispatch()
+    const {rooms} = useSelector((state: RoomState) => state.roomReducer)
+    const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
     const [useTable, setUseTable] = useState(true)
-    const [displayRooms, setDisplayRooms] = useState<Room[]>(props.rooms)
+    const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms)
     const [filter, setFilter] = useState(ALLROOMS)
 
     const filterRoomByTime = (room: Room, time: number): boolean => {
-        if(room.reservation !== undefined && room.reservation !== null){
-            return room.reservation?.timeCheckSeconds() < time
+        if(room.reservation !== undefined && room.reservation !== null && room.reservation !== -1){
+            const res = reservations.find(r=>r.id===room.reservation)
+            if(res){
+                return res.totalTimeOnExam < time
+            }
         }
         return false
     }
+
+    const [clock, setClock] = useState(ClockFactory.instance(1000))
 
     function filterRoom() {
         const filterFunction = (room: Room): boolean => {
@@ -28,7 +38,7 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                     return true
                 }
                 case OPENROOMS: {
-                    return room.reservation === undefined || room.reservation === null
+                    return (room.reservation === undefined || room.reservation === null || room.reservation === -1) && room.available
                 }
                 case RUNNINGROOMS: {
                     return room.runningTimer
@@ -45,7 +55,7 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
             }
         }
 
-        setDisplayRooms(props.rooms.filter(filterFunction))
+        setDisplayRooms(rooms.filter(filterFunction))
 
     }
 
@@ -127,15 +137,15 @@ export const RoomTable: React.FC<{ rooms: Room[], moveResToQueue: any, updateAva
                             </tr>
                         </thead>
                         <tbody>
-                            {displayRooms.map(room => (
-                                <RoomRow room={room} moveResToQueue={props.moveResToQueue} updateAvailableRooms={props.updateAvailableRooms} useTable={useTable} completedRoom={props.completedRoom}/>
+                            {rooms.map(room => (
+                                <RoomRow room={room}  useTable={useTable} clock={clock}filter={filter}/>
                             ))}
                         </tbody>
                     </table>
                     :
                     <div className="row">
-                        {props.rooms.map(room => (
-                            <RoomRow room={room} moveResToQueue={props.moveResToQueue} updateAvailableRooms={props.updateAvailableRooms} useTable={useTable} completedRoom={props.completedRoom}/>
+                        {rooms.map(room => (
+                            <RoomRow room={room}  useTable={useTable} clock={clock} filter={filter}/>
                         ))}
                     </div>
                 }
