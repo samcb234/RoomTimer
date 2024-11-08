@@ -26,7 +26,7 @@ const reservationSlice = createSlice({
                 timeAdded: 0,
                 tenMinWarningGiven: false,
                 running: false,
-                assigned: false}
+                assigned: action.payload.isAssigned}
             state.reservationId = state.reservationId + 1
             state.reservations = [...state.reservations, newReservation]   
         },

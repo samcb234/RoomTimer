@@ -32,7 +32,7 @@ export const Homepage = () => {
         <RoomTable />
       </div>
       <div className='col'>
-        <AddResForm addDirectToRandomRoom={() => console.log('fucker')} />
+        <AddResForm  />
         <ReservationTable />
       </div>
     </div>

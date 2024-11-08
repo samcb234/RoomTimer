@@ -29,10 +29,10 @@ const roomSlice = createSlice({
         addReservationToRoom: (state, action) => {
             const room = state.rooms.find(r=> {
                 const validRoom = r.reservation === -1 && !(action.payload.privateRoom && !r.privateRoom)
-                && !(action.payload.needsComputer && r.hasComputer)
+                && !(action.payload.needsComputer && !r.hasComputer)
                 return action.payload.random ? validRoom : validRoom && r.name === action.payload.roomName
             })
-            if(room !== undefined){
+            if(room){
                 state.rooms = state.rooms.map(r=> {
                     if(r.name === room.name){
                         return {...room, reservation: action.payload.reservation}

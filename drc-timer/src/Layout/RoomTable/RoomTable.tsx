@@ -38,7 +38,7 @@ export const RoomTable: React.FC<{}> = (props) => {
                     return true
                 }
                 case OPENROOMS: {
-                    return room.reservation === undefined || room.reservation === null
+                    return (room.reservation === undefined || room.reservation === null || room.reservation === -1) && room.available
                 }
                 case RUNNINGROOMS: {
                     return room.runningTimer
@@ -137,15 +137,15 @@ export const RoomTable: React.FC<{}> = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {displayRooms.map(room => (
-                                <RoomRow room={room}  useTable={useTable} clock={clock}/>
+                            {rooms.map(room => (
+                                <RoomRow room={room}  useTable={useTable} clock={clock}filter={filter}/>
                             ))}
                         </tbody>
                     </table>
                     :
                     <div className="row">
-                        {displayRooms.map(room => (
-                            <RoomRow room={room}  useTable={useTable} clock={clock}/>
+                        {rooms.map(room => (
+                            <RoomRow room={room}  useTable={useTable} clock={clock} filter={filter}/>
                         ))}
                     </div>
                 }

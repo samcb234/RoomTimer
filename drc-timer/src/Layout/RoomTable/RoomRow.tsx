@@ -17,7 +17,7 @@ const presets = {"running": {message: "Pause", color: "danger"},
 "stopped": {message: "Start", color: "success"},
 "10min": {message: "Give 10 Min Warning", color: "warning"}}
 
-export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> = (props) => {
+export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, filter: string}> = (props) => {
     const dispatch = useDispatch()
     const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
     const [reservation, setReservation] = useState<Reservation | null>()
@@ -27,6 +27,47 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
     const [buttonColorString, setButtonColorString] = useState<string>('success')
     const [buttonString, setButtonString] = useState<string>('Start')
 
+    const [displayRow, setDisplayRow] = useState<boolean>(true)
+
+    useEffect(()=> {
+        switch(props.filter){
+            case 'all': {
+                setDisplayRow(true)
+                break
+            }
+            case 'open': {
+                setDisplayRow(props.room.reservation === -1 && props.room.available)
+                break
+            }
+            case 'running': {
+                if(reservation){
+                    setDisplayRow(reservation.running)
+                }else{
+                    setDisplayRow(false)
+                }
+                break
+            }
+            case 'under 10': {
+                if(reservation){
+                    setDisplayRow(reservation.totalTimeOnExam <= 600)
+                }else{
+                    setDisplayRow(false)
+                }
+                break
+            }
+            case 'times up': {
+                if(reservation){
+                    setDisplayRow(reservation.totalTimeOnExam <= 0)
+                }else{
+                    setDisplayRow(false)
+                }
+                break
+            }
+            default: {
+                setDisplayRow(true)
+            }
+        }
+    }, [props.filter])
 
     const clock = props.clock
 
@@ -130,7 +171,7 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
                 }
             } else {
                 handleButtonChange(presets['stopped'])
-                setRowColor('primary')
+                setRowColor('')
             }
         }
         handleStartStopButton()
@@ -138,6 +179,7 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
     }, [reservation])
 
     return (
+    <>{displayRow?
         <>
             {props.useTable ?
                 <tr className={`table-${rowColor}`}>
@@ -216,5 +258,7 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
                 </div>
             }
         </>
+        :
+    <></>}</>
     )
 }
