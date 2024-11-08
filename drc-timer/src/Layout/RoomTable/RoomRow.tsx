@@ -33,7 +33,8 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
     const tick = () => {
         setReservation(prevRes=>
             prevRes?
-            {...prevRes, totalTimeOnExam: prevRes.running? prevRes.totalTimeOnExam - 1 : prevRes.totalTimeOnExam}
+            {...prevRes, totalTimeOnExam: prevRes.running && (prevRes.totalTimeOnExam > 600 || prevRes.tenMinWarningGiven) ? prevRes.totalTimeOnExam - 1 : prevRes.totalTimeOnExam,
+            running: (prevRes.totalTimeOnExam <= 600) && !prevRes.tenMinWarningGiven ? false : prevRes.running, startTime: prevRes.running? new Date() : prevRes.startTime}
             :
             prevRes)
     }
@@ -68,7 +69,8 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
         setReservation(prevRes=>
             prevRes ?
             {...prevRes, running: !prevRes.running,
-            startTime: !prevRes.running? new Date() : prevRes.startTime}
+            startTime: !prevRes.running? new Date() : prevRes.startTime,
+            tenMinWarningGiven: (!prevRes.running && prevRes.totalTimeOnExam <= 600 && !prevRes.tenMinWarningGiven)? true : prevRes.tenMinWarningGiven}
             :prevRes)
     }
 
@@ -94,6 +96,46 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock}> =
     const changeRoomAvailability = () => {
         dispatch(updateRoomAvailability({name: props.room.name}))
     }
+
+    useEffect(()=> {
+        const handleReservationDisplay = () => {
+            if(reservation){
+                if(reservation.onlineExam){
+                    setDisplayString('Online')
+                } else {
+                    setDisplayString(formatTime(reservation.totalTimeOnExam))
+                }
+            } else {
+                setDisplayString('empty')
+            }
+        }
+        const handleButtonChange = (preset: buttonPresets)=>{
+            setButtonColorString(preset['color'])
+            setButtonString(preset['message'])
+        }
+        const handleStartStopButton = () => {
+            if(reservation){
+                if(reservation.onlineExam || reservation.totalTimeOnExam > 600){
+                    handleButtonChange(reservation.running? presets['running'] : presets['stopped'])
+                    setRowColor(reservation.running? 'success' : 'primary')
+                } else if(reservation.running && reservation.totalTimeOnExam === 600 && !reservation.tenMinWarningGiven){
+                    handleButtonChange(presets['10min'])
+                    setRowColor('warning')
+                } else if(reservation.totalTimeOnExam <= 600 && reservation.tenMinWarningGiven){
+                    handleButtonChange(reservation.running? presets['running'] : presets['stopped'])
+                    setRowColor('warning')
+                } else if(reservation.totalTimeOnExam <= 0){
+                    handleButtonChange(reservation.running? presets['running'] : presets['stopped'])
+                    setRowColor('danger')
+                }
+            } else {
+                handleButtonChange(presets['stopped'])
+                setRowColor('primary')
+            }
+        }
+        handleStartStopButton()
+        handleReservationDisplay()
+    }, [reservation])
 
     return (
         <>
