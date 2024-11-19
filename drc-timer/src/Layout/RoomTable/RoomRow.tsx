@@ -17,7 +17,9 @@ const presets = {"running": {message: "Pause", color: "danger"},
 "stopped": {message: "Start", color: "success"},
 "10min": {message: "Give 10 Min Warning", color: "warning"}}
 
-export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, filter: string}> = (props) => {
+export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, filter: string, searchString: string,
+    searchFilter: string
+}> = (props) => {
     const dispatch = useDispatch()
     const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
     const [reservation, setReservation] = useState<Reservation | null>()
@@ -29,19 +31,40 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, fi
 
     const [displayRow, setDisplayRow] = useState<boolean>(true)
 
+    const checkSearch = () => {
+        if(reservation){
+            switch(props.searchFilter){
+                case 'student': {
+                    return reservation.name.toLowerCase().includes(props.searchString.toLowerCase())
+                }
+                case 'class': {
+                    return reservation.examName.toLowerCase().includes(props.searchString.toLowerCase())
+                }
+                // case 'professor': {
+                //     return reservation.professor.toLowerCase().includes(props.searchString.toLowerCase())
+                // }
+                default: {
+                    return false
+                }
+            }
+        } else {
+            return props.searchString === ''
+        }
+    }
+
     useEffect(()=> {
         switch(props.filter){
             case 'all': {
-                setDisplayRow(true)
+                setDisplayRow(checkSearch())
                 break
             }
             case 'open': {
-                setDisplayRow(props.room.reservation === -1 && props.room.available)
+                setDisplayRow(props.room.reservation === -1 && props.room.available && checkSearch())
                 break
             }
             case 'running': {
                 if(reservation){
-                    setDisplayRow(reservation.running)
+                    setDisplayRow(reservation.running && checkSearch())
                 }else{
                     setDisplayRow(false)
                 }
@@ -49,7 +72,7 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, fi
             }
             case 'under 10': {
                 if(reservation){
-                    setDisplayRow(reservation.totalTimeOnExam <= 600)
+                    setDisplayRow(reservation.totalTimeOnExam <= 600 && checkSearch())
                 }else{
                     setDisplayRow(false)
                 }
@@ -57,17 +80,21 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, fi
             }
             case 'times up': {
                 if(reservation){
-                    setDisplayRow(reservation.totalTimeOnExam <= 0)
+                    setDisplayRow(reservation.totalTimeOnExam <= 0 && checkSearch())
                 }else{
                     setDisplayRow(false)
                 }
                 break
             }
             default: {
-                setDisplayRow(true)
+            if(reservation){
+                setDisplayRow(checkSearch())
+            } else {
+                setDisplayRow(false)
             }
         }
-    }, [props.filter])
+        }
+    }, [props.filter, props.searchFilter, props.searchString])
 
     const clock = props.clock
 
