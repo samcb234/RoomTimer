@@ -8,16 +8,6 @@ import { useDispatch } from "react-redux"
 
 export const Homepage = () => {
 
-  function resFilter(name: string, examName: string, res: Reservation) {
-    return (name !== res.name) || (examName !== res.examName)
-  }
-
-
-
-  // function startRoomUpdate(){
-  //     setUpdateAvailableRooms(!updateAvailableRooms)
-  // }
-
   document.title = 'DRC Exam Timer'
 
   window.addEventListener('beforeunload', function (e: any) {

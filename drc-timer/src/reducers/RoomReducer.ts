@@ -15,17 +15,6 @@ const roomSlice = createSlice({
     name: 'rooms',
     initialState,
     reducers: {
-        // startOrStopTimer: (state, action)=> {
-        //     const updatedRooms: Room[] = state.rooms.map((room)=>{
-        //         if(room.name === action.payload.name){
-        //             return {...room, runningTimer: !room.runningTimer}
-        //         } else{
-        //             return room
-        //         }
-        //     })
-
-        //     state.rooms = updatedRooms
-        // },
         addReservationToRoom: (state, action) => {
             const room = state.rooms.find(r=> {
                 const validRoom = r.reservation === -1 && !(action.payload.privateRoom && !r.privateRoom)

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
-import Room from "../../models/Room"
+import { useState } from "react"
 import { RoomRow } from "./RoomRow"
-import { useDispatch, useSelector } from "react-redux"
-import { ReservationState, RoomState } from "../../stores"
+import { useSelector } from "react-redux"
+import { RoomState } from "../../stores"
 import ClockFactory from "../../utils/clockFactory"
+import { SearchFilter } from "../../types"
 
 const ALLROOMS: string = 'all'
 const OPENROOMS: string = 'open'
@@ -12,62 +12,17 @@ const TENMINORLESS: string = 'under 10'
 const PASTTIME: string = 'times up'
 
 export const RoomTable: React.FC<{}> = (props) => {
-    const dispatch = useDispatch()
-    const {rooms} = useSelector((state: RoomState) => state.roomReducer)
-    const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
+    const { rooms } = useSelector((state: RoomState) => state.roomReducer)
     const [useTable, setUseTable] = useState(true)
-    const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms)
     const [filter, setFilter] = useState(ALLROOMS)
-
-    const filterRoomByTime = (room: Room, time: number): boolean => {
-        if(room.reservation !== undefined && room.reservation !== null && room.reservation !== -1){
-            const res = reservations.find(r=>r.id===room.reservation)
-            if(res){
-                return res.totalTimeOnExam < time
-            }
-        }
-        return false
-    }
+    const [search, setSearch] = useState('')
+    const [searchFilter, setSearchFilter] = useState<SearchFilter>('student')
 
     const [clock, setClock] = useState(ClockFactory.instance(1000))
 
-    function filterRoom() {
-        const filterFunction = (room: Room): boolean => {
-            switch(filter){
-                case ALLROOMS: {
-                    return true
-                }
-                case OPENROOMS: {
-                    return (room.reservation === undefined || room.reservation === null || room.reservation === -1) && room.available
-                }
-                case RUNNINGROOMS: {
-                    return room.runningTimer
-                }
-                case TENMINORLESS: {
-                    return filterRoomByTime(room, 600)
-                }
-                case PASTTIME: {
-                    return filterRoomByTime(room, 0)
-                }
-                default: {
-                    return true
-                }
-            }
-        }
-
-        setDisplayRooms(rooms.filter(filterFunction))
-
-    }
-
-    useEffect(() => {
-
-        const interval = setInterval(() => filterRoom(), 250)
-
-        return () => clearInterval(interval)
-    })
 
     const updateFilter = (newFilter: string) => {
-        if(filter === newFilter){
+        if (filter === newFilter) {
             setFilter(ALLROOMS)
         } else {
             setFilter(newFilter)
@@ -78,34 +33,24 @@ export const RoomTable: React.FC<{}> = (props) => {
         <div className="container mt-3">
             <div className="row">
                 <div className="col">
-                    <button className="btn btn-primary mb-2" onClick={() => setUseTable(!useTable)}>
-                        {useTable ? 'Grid View' : 'Table View'}
-                    </button>
+                    <select className="form-select" onChange={(e) => updateFilter(e.target.value)}>
+                        <option selected value={ALLROOMS}>All Rooms</option>
+                        <option value={OPENROOMS}>Open Rooms</option>
+                        <option value={RUNNINGROOMS}>Running Rooms</option>
+                        <option value={TENMINORLESS}>Under 10 Min</option>
+                        <option value={PASTTIME}>Times Up</option>
+                    </select>
                 </div>
                 <div className="col">
-                    <button className={filter===ALLROOMS? "btn btn-primary mb-2": "btn btn-secondary mb-2"} onClick={()=> updateFilter(ALLROOMS)}>
-                        All Rooms
-                    </button>
+                    <input type="search" className="form-control" value={search} onChange={(e) => setSearch(e.target.value)}
+                        placeholder="search for student names, classes, or professor names" />
                 </div>
                 <div className="col">
-                    <button className={filter===OPENROOMS? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(OPENROOMS)}>
-                        Open Rooms
-                    </button>
-                </div>
-                <div className="col">
-                    <button className={filter===RUNNINGROOMS? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(RUNNINGROOMS)}>
-                        Running Rooms
-                    </button>
-                </div>
-                <div className="col">
-                    <button className={filter===TENMINORLESS? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(TENMINORLESS)}>
-                        Under 10 Min
-                    </button>
-                </div>
-                <div className="col">
-                    <button className={filter===PASTTIME? "btn btn-primary mb-2": "btn btn-secondary mb-2"}  onClick={()=> updateFilter(PASTTIME)}>
-                        Finished Rooms
-                    </button>
+                    <select className="form-select" onChange={(e) => setSearchFilter(e.target.value as SearchFilter)}>
+                        <option selected value="student">Student</option>
+                        <option value="class">Class</option>
+                        <option value="professor">Professor</option>
+                    </select>
                 </div>
             </div>
             <div className="overflow-table">
@@ -138,14 +83,16 @@ export const RoomTable: React.FC<{}> = (props) => {
                         </thead>
                         <tbody>
                             {rooms.map(room => (
-                                <RoomRow room={room}  useTable={useTable} clock={clock}filter={filter}/>
+                                <RoomRow room={room} useTable={useTable} clock={clock} filter={filter} searchString={search}
+                                    searchFilter={searchFilter} />
                             ))}
                         </tbody>
                     </table>
                     :
                     <div className="row">
                         {rooms.map(room => (
-                            <RoomRow room={room}  useTable={useTable} clock={clock} filter={filter}/>
+                            <RoomRow room={room} useTable={useTable} clock={clock} filter={filter} searchString={search}
+                                searchFilter={searchFilter} />
                         ))}
                     </div>
                 }
