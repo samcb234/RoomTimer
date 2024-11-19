@@ -72,7 +72,7 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, fi
             }
             case 'under 10': {
                 if(reservation){
-                    setDisplayRow(reservation.totalTimeOnExam <= 600 && checkSearch())
+                    setDisplayRow(0 < reservation.totalTimeOnExam && reservation.totalTimeOnExam <= 600 && checkSearch())
                 }else{
                     setDisplayRow(false)
                 }
@@ -189,7 +189,7 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, fi
                 } else if(reservation.running && reservation.totalTimeOnExam === 600 && !reservation.tenMinWarningGiven){
                     handleButtonChange(presets['10min'])
                     setRowColor('warning')
-                } else if(reservation.totalTimeOnExam <= 600 && reservation.tenMinWarningGiven){
+                } else if((0 < reservation.totalTimeOnExam && reservation.totalTimeOnExam <= 600) && reservation.tenMinWarningGiven){
                     handleButtonChange(reservation.running? presets['running'] : presets['stopped'])
                     setRowColor('warning')
                 } else if(reservation.totalTimeOnExam <= 0){
