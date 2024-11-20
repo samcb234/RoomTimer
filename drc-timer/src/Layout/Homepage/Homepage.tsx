@@ -5,6 +5,7 @@ import Reservation from "../../models/Reservation"
 import Room from "../../models/Room"
 import { AddResForm } from "../AddResForm/AddResForm"
 import { useDispatch } from "react-redux"
+import Alert from "../TimerAlert/alert"
 
 export const Homepage = () => {
 
@@ -17,6 +18,8 @@ export const Homepage = () => {
   })
 
   return (
+  <>
+  <Alert/>
     <div className='row'>
       <div className='col'>
         <RoomTable />
@@ -26,5 +29,6 @@ export const Homepage = () => {
         <ReservationTable />
       </div>
     </div>
+  </>
   )
 }
