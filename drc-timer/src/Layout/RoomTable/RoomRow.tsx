@@ -7,6 +7,7 @@ import { addTimeToExam, deleteExam, startOrStopTimer, updateSeatedReservation } 
 import { setReservationToNull, updateRoomAvailability } from "../../reducers/RoomReducer";
 import { Clock } from "../../utils/clock";
 import { formatTime } from "../../utils/formatTime";
+import { setTenMinAlarm, setTimesUpAlarm } from "../../reducers/AlarmReducer";
 
 type buttonPresets = {
     message: string;
@@ -94,7 +95,7 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, fi
             }
         }
         }
-    }, [props.filter, props.searchFilter, props.searchString])
+    }, [props.filter, props.searchFilter, props.searchString, props.room, reservation])
 
     const clock = props.clock
 
@@ -189,21 +190,30 @@ export const RoomRow: React.FC<{ room: Room, useTable: boolean, clock: Clock, fi
                 } else if(reservation.running && reservation.totalTimeOnExam === 600 && !reservation.tenMinWarningGiven){
                     handleButtonChange(presets['10min'])
                     setRowColor('warning')
+                    dispatch(setTenMinAlarm(true))
                 } else if((0 < reservation.totalTimeOnExam && reservation.totalTimeOnExam <= 600) && reservation.tenMinWarningGiven){
                     handleButtonChange(reservation.running? presets['running'] : presets['stopped'])
                     setRowColor('warning')
-                } else if(reservation.totalTimeOnExam <= 0){
+                } else if(reservation.totalTimeOnExam === 0){
+                    handleButtonChange(reservation.running? presets['running'] : presets['stopped'])
+                    setRowColor('danger')
+                    dispatch(setTimesUpAlarm(true))
+                } else if (reservation.totalTimeOnExam < 0){
                     handleButtonChange(reservation.running? presets['running'] : presets['stopped'])
                     setRowColor('danger')
                 }
-            } else {
+            } else if (!props.room.available){
+                handleButtonChange(presets['stopped'])
+                setRowColor('secondary')
+            }
+             else {
                 handleButtonChange(presets['stopped'])
                 setRowColor('')
             }
         }
         handleStartStopButton()
         handleReservationDisplay()
-    }, [reservation])
+    }, [reservation, props.room.available])
 
     return (
     <>{displayRow?
