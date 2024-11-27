@@ -54,7 +54,8 @@ export const ReservationRow: React.FC<{ reservation: Reservation }> = (props) =>
                 <button className="btn btn-primary" onClick={() => assignToRandomRoom()}>Assign To Room</button>
             </th>
             <th>
-                <AddToSpecificRoomButton rooms={rooms.filter(room => validRoom(room))} assign={addResToSpecificRoom} buttonString="assign to specific room" />
+                <AddToSpecificRoomButton rooms={rooms.filter(room => validRoom(room))} assign={addResToSpecificRoom} 
+                buttonString="assign to specific room" dismissModal={false}/>
             </th>
             <th>
                 <div className="dropdown">

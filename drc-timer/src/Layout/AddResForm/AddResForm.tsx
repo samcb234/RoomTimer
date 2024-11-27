@@ -76,12 +76,13 @@ const AddResForm = ({ saveChangeAction, reassignAction }: AddResFormProps) => {
             </div>
             <div className="row">
                 <div className="col">
-                    <button className="btn btn-primary" onClick={() => asdf()} >
+                    <button className="btn btn-primary" onClick={() => asdf()} data-bs-dismiss='modal' >
                         {resAction === 'save' ? 'Save' : 'Edit'}
                     </button>
                 </div>
                 <div className="col">
-                    <AddToSpecificRoomButton rooms={rooms.filter(room => validRoom(room))} assign={assign} buttonString="Create And Add To Specific Room" />
+                    <AddToSpecificRoomButton rooms={rooms.filter(room => validRoom(room))} assign={assign}
+                     buttonString="Create And Add To Specific Room" dismissModal={true}/>
                 </div>
             </div>
         </div>
