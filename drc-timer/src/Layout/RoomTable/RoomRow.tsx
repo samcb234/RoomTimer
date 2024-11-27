@@ -180,11 +180,6 @@ export const RoomRow: React.FC<{
         }
     }
 
-    const addTime = (timeToAdd: number) => {
-        setReservation(prevRes =>
-            prevRes ? { ...prevRes, totalTimeOnExam: prevRes.totalTimeOnExam + timeToAdd } : prevRes)
-    }
-
     const changeRoomAvailability = () => {
         dispatch(updateRoomAvailability({ name: props.room.name }))
     }
@@ -294,7 +289,6 @@ export const RoomRow: React.FC<{
                                         </button>
                                     </li>
                                     <li><a className="dropdown-item" href="#" onClick={() => emptyRoom()}>Finish Exam</a></li>
-                                    <li><a className="dropdown-item" href="#" onClick={() => addTime(600)}>Add Time To Exam</a></li>
                                     <li><a className="dropdown-item" href="#" onClick={() => changeRoomAvailability()}>{props.room.available ? 'Mark Room As Unavailable' : 'Mark Room as Available'}</a></li>
                                 </ul>
                             </div>
@@ -321,7 +315,6 @@ export const RoomRow: React.FC<{
                                     <ul className="dropdown-menu">
                                         <li><a className="dropdown-item" href="#" onClick={() => moveResToQueue()}>Return Exam To Queue</a></li>
                                         <li><a className="dropdown-item" href="#" onClick={() => emptyRoom()}>Finish Exam</a></li>
-                                        <li><a className="dropdown-item" href="#" onClick={() => addTime(600)}>Add Time To Exam</a></li>
                                         <li><a className="dropdown-item" href="#" onClick={() => changeRoomAvailability()}>{props.room.available ? 'Mark Room As Unavailable' : 'Mark Room as Available'}</a></li>
                                     </ul>
                                 </div>

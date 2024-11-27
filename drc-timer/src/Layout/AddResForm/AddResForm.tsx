@@ -3,6 +3,7 @@ import { AddToSpecificRoomButton } from "../../utils/AddToSpecificRoomButton/Add
 import useResForm from "../../hooks/useResForm"
 import { useSelector } from "react-redux";
 import { ReservationState } from "../../stores";
+import { useState } from "react";
 
 interface AddResFormProps {
     saveChangeAction: (reservation: Reservation) => void;
@@ -15,12 +16,19 @@ const AddResForm = ({ saveChangeAction, reassignAction }: AddResFormProps) => {
 
     const { resAction } = useSelector((state: ReservationState) => state.reservationReducer)
 
+    const [extraMinutes, setExtraMinutes] = useState<number>(0)
+
     function assign(roomName: string) {
         reassignAction(curReservation, roomName)
     }
 
     const asdf = () => {
         saveChangeAction(curReservation)
+    }
+
+    const addExtraMinute = ()=> {
+        setTotalTimeOnExam((curReservation.totalTimeOnExam/60) + 1)
+        setExtraMinutes(extraMinutes + 1)
     }
 
     return (
@@ -36,7 +44,11 @@ const AddResForm = ({ saveChangeAction, reassignAction }: AddResFormProps) => {
                     value={curReservation.examName} onChange={e => setExamName(e.target.value)} />
             </div>
             <div className="input-group mb-3">
-                {resAction === 'edit' ? <></>
+                {resAction === 'edit' ? <>
+                <button className="btn btn-primary" onClick={()=> addExtraMinute()}>
+                {`Add Extra Minute (${extraMinutes}) added`}
+                    </button>
+                </>
                     :
                     <>
                         <span className="input-group-text" id="basic-addon2">Exam Length</span>
