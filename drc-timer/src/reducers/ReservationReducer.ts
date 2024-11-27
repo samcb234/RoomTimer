@@ -4,31 +4,48 @@ import Reservation from "../models/Reservation";
 interface ReservationState{
     reservations: Reservation[];
     reservationId: number;
+    curReservation: Reservation;
+    resAction: 'save' | 'edit';
 }
 
 const initialState: ReservationState = {
     reservations: [],
     reservationId: 1,
+    curReservation: {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false},
+    resAction: 'save'
 }
 
 const reservationSlice = createSlice({
     name: 'reservations',
     initialState,
     reducers: {
-        createReservation: (state, action) => {
-            const newReservation: Reservation = {id:state.reservationId,
-                name:action.payload.resName,
-                examName: action.payload.examName, startTime: null,
-                totalTimeOnExam: action.payload.examLength,
-                privateRoom: action.payload.privateRoom,
-                computerNeeded: action.payload.needsComputer,
-                onlineExam: action.payload.isOnline,
-                timeAdded: 0,
-                tenMinWarningGiven: false,
-                running: false,
-                assigned: action.payload.isAssigned}
-            state.reservationId = state.reservationId + 1
-            state.reservations = [...state.reservations, newReservation]   
+        actOnReservation: (state) => {
+            if(state.resAction === 'save'){
+                state.reservations = [...state.reservations, {...state.curReservation, id: state.reservationId}]
+                state.reservationId = state.reservationId + 1
+                state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
+            }
+            else if(state.resAction === 'edit'){
+                const updatedReservations = state.reservations.map(res=> {
+                    if(res.id === state.curReservation.id){
+                        return state.curReservation
+                    } else {
+                        return res
+                    }
+                })
+                state.reservations = updatedReservations
+                state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
+            }
+        },
+        setCurReservation: (state, action)=> {
+            const res = state.reservations.find(res=>res.id === action.payload.id)
+            if(res){
+                state.curReservation = res
+                state.resAction = action.payload.resAction
+            } else {
+                state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
+                state.resAction = 'save'
+            }
         },
         assignReservationToRoom: (state, action) => {
             const updatedReservations = state.reservations.map(res=> {
@@ -86,10 +103,13 @@ const reservationSlice = createSlice({
                 }
             })
             state.reservations = updatedSeated
+        },
+        editCurReservation: (state, action) => {
+            state.curReservation = action.payload
         }
     }
 })
 
-export const {createReservation, assignReservationToRoom,
-deleteExam, addTimeToExam, startOrStopTimer, updateSeatedReservation, updateUnseatedReservation} = reservationSlice.actions
+export const {actOnReservation, setCurReservation, assignReservationToRoom,
+deleteExam, addTimeToExam, startOrStopTimer, updateSeatedReservation, updateUnseatedReservation, editCurReservation} = reservationSlice.actions
 export default reservationSlice.reducer

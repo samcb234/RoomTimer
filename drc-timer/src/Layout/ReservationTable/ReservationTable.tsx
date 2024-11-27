@@ -4,6 +4,7 @@ import { ReservationRow } from "./ReservationRow"
 import Room from "../../models/Room"
 import { useSelector } from "react-redux"
 import { ReservationState } from "../../stores"
+import AddOrEditModal from "../AddResForm/AddOrEditModal"
 
 export const ReservationTable: React.FC<{}> = (props)=>{
     const {reservations} = useSelector((state: ReservationState)=> state.reservationReducer)
@@ -28,6 +29,9 @@ export const ReservationTable: React.FC<{}> = (props)=>{
                         <th scope="col">
                             Assign To Specific Room
                         </th>
+                        <th scope="col">
+                            ...
+                            </th>
                     </tr>
                 </thead>
                 <tbody>
