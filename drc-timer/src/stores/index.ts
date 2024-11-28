@@ -15,6 +15,8 @@ export interface ReservationState {
     reservationReducer: {
         reservations: Reservation[]
         reservationId: number
+        curReservation: Reservation
+        resAction: 'save' | 'edit'
     }
 }
 export interface AlarmState {

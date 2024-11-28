@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"
 import { RoomState } from "../../stores"
 import ClockFactory from "../../utils/clockFactory"
 import { SearchFilter } from "../../types"
+import AddOrEditModal from "../AddResForm/AddOrEditModal"
 
 const ALLROOMS: string = 'all'
 const OPENROOMS: string = 'open'
