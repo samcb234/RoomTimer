@@ -43,14 +43,16 @@ export const RoomTable: React.FC<{}> = (props) => {
                     </select>
                 </div>
                 <div className="col">
+                    {/* <input type="search" className="form-control" value={search} onChange={(e) => setSearch(e.target.value)}
+                        placeholder="search for student names, classes, or professor names" /> */}
                     <input type="search" className="form-control" value={search} onChange={(e) => setSearch(e.target.value)}
-                        placeholder="search for student names, classes, or professor names" />
+                        placeholder="search for student names, classes" />
                 </div>
                 <div className="col">
                     <select className="form-select" onChange={(e) => setSearchFilter(e.target.value as SearchFilter)}>
                         <option selected value="student">Student</option>
                         <option value="class">Class</option>
-                        <option value="professor">Professor</option>
+                        {/* <option value="professor">Professor</option> */}
                     </select>
                 </div>
             </div>
