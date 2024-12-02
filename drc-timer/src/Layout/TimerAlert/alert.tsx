@@ -1,4 +1,4 @@
-import useAudioPlayer from "../../useAudio"
+import useAudioPlayer from "../../hooks/useAudio"
 
 const Alert = () => {
     const { tenMinAlarm, timesUpAlarm, handleTenMinAlarm, handleTimesUpAlarm } = useAudioPlayer();

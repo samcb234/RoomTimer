@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AlarmState } from "./stores";
-import { setTenMinAlarm, setTimesUpAlarm } from "./reducers/AlarmReducer";
+import { AlarmState } from "../stores";
+import { setTenMinAlarm, setTimesUpAlarm } from "../reducers/AlarmReducer";
 // @ts-ignore
-import alarm from "./Layout/TimerAlert/alarm.mp3";
+import alarm from "../Layout/TimerAlert/alarm.mp3";
 
 function useAudioPlayer() {
     const dispatch = useDispatch();
