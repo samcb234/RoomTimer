@@ -24,9 +24,6 @@ export const ReservationTable: React.FC<{}> = (props)=>{
                             Exam Length
                         </th>
                         <th scope="col">
-                            Assign to Random Room
-                        </th>
-                        <th scope="col">
                             Assign To Specific Room
                         </th>
                         <th scope="col">

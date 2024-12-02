@@ -10,13 +10,6 @@ import { RoomState } from "../../stores";
 export const ReservationRow: React.FC<{ reservation: Reservation }> = (props) => {
     const dispatch = useDispatch()
     const { rooms } = useSelector((state: RoomState) => state.roomReducer)
-    const assignToRandomRoom = () => {
-        dispatch(addReservationToRoom({
-            random: true, needsComputer: props.reservation.computerNeeded,
-            privateRoom: props.reservation.privateRoom, reservation: props.reservation.id
-        }))
-        dispatch(assignReservationToRoom({ id: props.reservation.id }))
-    }
     function addResToSpecificRoom(roomName: string) {
         dispatch(addReservationToRoom({
             random: false, needsComputer: props.reservation.computerNeeded,
@@ -49,9 +42,6 @@ export const ReservationRow: React.FC<{ reservation: Reservation }> = (props) =>
             </th>
             <th>
                 {formatTime(props.reservation.totalTimeOnExam)}
-            </th>
-            <th>
-                <button className="btn btn-primary" onClick={() => assignToRandomRoom()}>Assign To Room</button>
             </th>
             <th>
                 <AddToSpecificRoomButton rooms={rooms.filter(room => validRoom(room))} assign={addResToSpecificRoom} 
