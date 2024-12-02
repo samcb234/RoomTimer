@@ -3,7 +3,7 @@ import Room from "../../models/Room";
 import Reservation from "../../models/Reservation";
 import { useDispatch, useSelector } from "react-redux";
 import { ReservationState } from "../../stores";
-import { deleteExam, editCurReservation, setCurReservation, updateSeatedReservation } from "../../reducers/ReservationReducer";
+import { deleteExam, setCurReservation, updateSeatedReservation } from "../../reducers/ReservationReducer";
 import { setReservationToNull, updateRoomAvailability } from "../../reducers/RoomReducer";
 import { Clock } from "../../utils/clock";
 import { formatTime } from "../../utils/formatTime";
@@ -25,7 +25,7 @@ export const RoomRow: React.FC<{
     searchFilter: string
 }> = (props) => {
     const dispatch = useDispatch()
-    const { reservations } = useSelector((state: ReservationState) => state.reservationReducer)
+    const { reservations, curReservation} = useSelector((state: ReservationState) => state.reservationReducer)
     const [reservation, setReservation] = useState<Reservation | null>()
 
     const [rowColor, setRowColor] = useState<string>('primary')
@@ -142,17 +142,24 @@ export const RoomRow: React.FC<{
 
     useEffect(()=>{
 
-        const newRes = reservations.find(res => res.id === props.room.reservation && res.assigned)
-        const d = new Date()
-        const updatedReservation = newRes ?
-            {
-                ...newRes,
-                totalTimeOnExam: newRes.running && newRes.startTime ?
-                    newRes.totalTimeOnExam - Math.abs((newRes.startTime.getTime() - d.getTime()) / 1000)
-                    : newRes.totalTimeOnExam
-            }
-            : newRes
-        setReservation(updatedReservation)
+        const updateRes = () => {
+
+            const newRes = reservations.find(res => res.id === props.room.reservation && res.assigned)
+            const d = new Date()
+            const updatedReservation = newRes ?
+                {
+                    ...newRes,
+                    totalTimeOnExam: newRes.running && newRes.startTime ?
+                        newRes.totalTimeOnExam - Math.abs((newRes.startTime.getTime() - d.getTime()) / 1000)
+                        : newRes.totalTimeOnExam
+                }
+                : newRes
+            setReservation(updatedReservation)
+        }
+
+        if(curReservation.id === props.room.reservation){
+            updateRes()
+        }
     }, [reservations])
 
     const startStopClick = () => {

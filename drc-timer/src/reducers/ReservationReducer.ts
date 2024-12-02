@@ -23,7 +23,7 @@ const reservationSlice = createSlice({
             if(state.resAction === 'save'){
                 state.reservations = [...state.reservations, {...state.curReservation, id: state.reservationId}]
                 state.reservationId = state.reservationId + 1
-                state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
+                // state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
             }
             else if(state.resAction === 'edit'){
                 const updatedReservations = state.reservations.map(res=> {
@@ -34,7 +34,7 @@ const reservationSlice = createSlice({
                     }
                 })
                 state.reservations = updatedReservations
-                state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
+                // state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
             }
         },
         setCurReservation: (state, action)=> {
