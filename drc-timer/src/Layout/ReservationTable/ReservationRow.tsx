@@ -29,7 +29,7 @@ export const ReservationRow: React.FC<{ reservation: Reservation }> = (props) =>
     }
 
     const setCurrentReservation = () => {
-        dispatch(setCurReservation({id: props.reservation.id, resAction: 'edit'}))
+        dispatch(setCurReservation({id: props.reservation.id, resAction: 'edit', timeInput: 'textbox'}))
     }
 
     return (

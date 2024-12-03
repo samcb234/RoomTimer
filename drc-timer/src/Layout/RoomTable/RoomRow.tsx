@@ -90,6 +90,14 @@ export const RoomRow: React.FC<{
                 }
                 break
             }
+            case 'assigned': {
+                if(reservation && props.room.reservation !== -1) {
+                    setDisplayRow(true)
+                }else {
+                    setDisplayRow(false)
+                }
+                break
+            }
             default: {
                 if (reservation) {
                     setDisplayRow(checkSearch())
@@ -243,7 +251,7 @@ export const RoomRow: React.FC<{
     const setModal = () => {
         if(reservation){
             dispatch(updateSeatedReservation(reservation))
-            dispatch(setCurReservation({id: reservation.id, resAction: 'edit'}))
+            dispatch(setCurReservation({id: reservation.id, resAction: 'edit', timeInput: 'button'}))
         }
     }
 

@@ -14,7 +14,7 @@ const AddResForm = ({ saveChangeAction, reassignAction }: AddResFormProps) => {
     const { validRoom, setName, setExamName, setTotalTimeOnExam, setPrivateRoom, setComputerNeeded, setOnlineExam,
         curReservation, rooms } = useResForm()
 
-    const { resAction } = useSelector((state: ReservationState) => state.reservationReducer)
+    const { resAction, timeInput } = useSelector((state: ReservationState) => state.reservationReducer)
 
     const [extraMinutes, setExtraMinutes] = useState<number>(0)
 
@@ -24,10 +24,11 @@ const AddResForm = ({ saveChangeAction, reassignAction }: AddResFormProps) => {
 
     const asdf = () => {
         saveChangeAction(curReservation)
+        setExtraMinutes(0)
     }
 
-    const addExtraMinute = ()=> {
-        setTotalTimeOnExam((curReservation.totalTimeOnExam/60) + 1)
+    const addExtraMinute = () => {
+        setTotalTimeOnExam((curReservation.totalTimeOnExam / 60) + 1)
         setExtraMinutes(extraMinutes + 1)
     }
 
@@ -45,9 +46,17 @@ const AddResForm = ({ saveChangeAction, reassignAction }: AddResFormProps) => {
             </div>
             <div className="input-group mb-3">
                 {resAction === 'edit' ? <>
-                <button className="btn btn-primary" onClick={()=> addExtraMinute()}>
-                {`Add Extra Minute (${extraMinutes}) added`}
-                    </button>
+                    {timeInput === 'button' ?
+                        <button className="btn btn-primary" onClick={() => addExtraMinute()}>
+                            {`Add Extra Minute (${extraMinutes}) added`}
+                        </button>
+                        :
+                        <>
+                            <span className="input-group-text" id="basic-addon2">Exam Length</span>
+                            <input type="number" className="form-control" placeholder="Total Exam Length (minutes)" aria-label="Username" aria-describedby="basic-addon2"
+                                value={curReservation.totalTimeOnExam === 0 ? '' : curReservation.totalTimeOnExam / 60} onChange={e => setTotalTimeOnExam(Number(e.target.value))} />
+                        </>
+                    }
                 </>
                     :
                     <>
@@ -94,7 +103,7 @@ const AddResForm = ({ saveChangeAction, reassignAction }: AddResFormProps) => {
                 </div>
                 <div className="col">
                     <AddToSpecificRoomButton rooms={rooms.filter(room => validRoom(room))} assign={assign}
-                     buttonString="Create And Add To Specific Room" dismissModal={true}/>
+                        buttonString="Create And Add To Specific Room" dismissModal={true} />
                 </div>
             </div>
         </div>
