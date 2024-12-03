@@ -10,6 +10,7 @@ const OPENROOMS: string = 'open'
 const RUNNINGROOMS: string = 'running'
 const TENMINORLESS: string = 'under 10'
 const PASTTIME: string = 'times up'
+const ASSIGNED: string = 'assigned'
 
 export const RoomTable: React.FC<{}> = (props) => {
     const { rooms } = useSelector((state: RoomState) => state.roomReducer)
@@ -36,6 +37,7 @@ export const RoomTable: React.FC<{}> = (props) => {
                     <select className="form-select" onChange={(e) => updateFilter(e.target.value)}>
                         <option selected value={ALLROOMS}>All Rooms</option>
                         <option value={OPENROOMS}>Open Rooms</option>
+                        <option value={ASSIGNED}>Assigned Rooms</option>
                         <option value={RUNNINGROOMS}>Running Rooms</option>
                         <option value={TENMINORLESS}>Under 10 Min</option>
                         <option value={PASTTIME}>Times Up</option>

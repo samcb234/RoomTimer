@@ -90,6 +90,14 @@ export const RoomRow: React.FC<{
                 }
                 break
             }
+            case 'assigned': {
+                if(reservation && props.room.reservation !== -1) {
+                    setDisplayRow(true)
+                }else {
+                    setDisplayRow(false)
+                }
+                break
+            }
             default: {
                 if (reservation) {
                     setDisplayRow(checkSearch())
