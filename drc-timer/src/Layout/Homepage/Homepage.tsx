@@ -32,7 +32,7 @@ export const Homepage = () => {
   }
 
   const setModal = () => {
-    dispatch(setCurReservation({id: reservationId, resAction: 'save'}))
+    dispatch(setCurReservation({id: reservationId, resAction: 'save', timeInput: 'textbox'}))
     dispatch(editCurReservation({name: '', examName: '', totalTimeOnExam: 0, privateRoom: false, computerNeeded: false}))
   }
 

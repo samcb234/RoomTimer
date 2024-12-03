@@ -15,7 +15,7 @@ function useFileParser() {
       const sheet = workbook.Sheets[sheetName]
       const parsedSheet = XLSX.utils.sheet_to_json(sheet)
       for (let i = 0; i < parsedSheet.length; i++) {
-        dispatch(setCurReservation({ id: -1, resAction: 'save' }))
+        dispatch(setCurReservation({ id: -1, resAction: 'save', timeInput: 'button'}))
         const res: any = parsedSheet[i]
         dispatch(editCurReservation({
           id: -1, name: res['Student: Account Name'], examName: res['Course Section'].substring(0, 8),

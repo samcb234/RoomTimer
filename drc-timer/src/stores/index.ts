@@ -17,6 +17,7 @@ export interface ReservationState {
         reservationId: number
         curReservation: Reservation
         resAction: 'save' | 'edit'
+        timeInput: 'button' | 'textbox'
     }
 }
 export interface AlarmState {

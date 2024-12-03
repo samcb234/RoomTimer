@@ -6,13 +6,15 @@ interface ReservationState{
     reservationId: number;
     curReservation: Reservation;
     resAction: 'save' | 'edit';
+    timeInput: 'button' | 'textbox';
 }
 
 const initialState: ReservationState = {
     reservations: [],
     reservationId: 1,
     curReservation: {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false},
-    resAction: 'save'
+    resAction: 'save',
+    timeInput: 'textbox'
 }
 
 const reservationSlice = createSlice({
@@ -42,6 +44,7 @@ const reservationSlice = createSlice({
             if(res){
                 state.curReservation = res
                 state.resAction = action.payload.resAction
+                state.timeInput = action.payload.timeInput
             } else {
                 state.curReservation = {id:0, name:'', examName:'', startTime:null, totalTimeOnExam:0, privateRoom:false, computerNeeded:false, onlineExam:false, timeAdded:0, tenMinWarningGiven:false, running:false, assigned:false}
                 state.resAction = 'save'

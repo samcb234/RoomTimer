@@ -243,7 +243,7 @@ export const RoomRow: React.FC<{
     const setModal = () => {
         if(reservation){
             dispatch(updateSeatedReservation(reservation))
-            dispatch(setCurReservation({id: reservation.id, resAction: 'edit'}))
+            dispatch(setCurReservation({id: reservation.id, resAction: 'edit', timeInput: 'button'}))
         }
     }
 
